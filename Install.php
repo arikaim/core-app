@@ -181,11 +181,7 @@ class Install
         $this->registerCoreEvents();
         $this->callback($onProgress,'Register system events');      
 
-        // reload seystem options
-        Arikaim::options()->load();
-      
         // create admin user if not exists       
-       
         $result = $this->createDefaultAdminUser();
         if ($result === false) {
             $this->callback($onProgressError,'Error creating control panel user');
@@ -539,6 +535,7 @@ class Install
     private function getSystemSchemaClasses()
     {
         return [
+            'OptionsSchema',
             'RoutesSchema',
             'UsersSchema',
             'PermissionsSchema',
@@ -551,7 +548,6 @@ class Install
             'ModulesSchema',
             'JobsSchema',
             'LanguageSchema',
-            'OptionsSchema',
             'PermissionsSchema',
             'AccessTokensSchema',
             'DriversSchema',
