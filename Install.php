@@ -33,13 +33,23 @@ class Install
     public static function setConfigFilesWritable(): bool
     {
         $result = true;
+        // config file
         $configFile = Arikaim::config()->getConfigFile();
-        if (File::isWritable($configFile) == false) {
-            $result = (File::setWritable($configFile) == false) ? false : $result;
+        $result = (File::setWritable($configFile) == false) ? false : $result;
+        // relatins file 
+        $configFile = PAth::CONFIG_PATH . 'relations.php';
+        $result = (File::setWritable($configFile) == false) ? false : $result;
+
+        // service container config
+        $configFile = PAth::CONFIG_PATH . 'service-providers.php';
+        if (File::exists($configFile) == true) {
+            File::setWritable($configFile);
         }
-        $relationsFile = PAth::CONFIG_PATH . 'relations.php';
-        if (File::isWritable($relationsFile) == false) {
-            $result = (File::setWritable($relationsFile) == false) ? false : $result;
+
+        // store config
+        $configFile = PAth::CONFIG_PATH . 'arikaim-store.php';
+        if (File::exists($configFile) == true) {
+            File::setWritable($configFile);
         }
 
         return $result;
@@ -340,10 +350,7 @@ class Install
         Arikaim::options()->createOption('library.params',[],true);
         // language
         Arikaim::options()->createOption('current.language','en',true);        
-        Arikaim::options()->createOption('default.language','en',true); 
-        // page
-        Arikaim::options()->createOption('current.page','',true); 
-        Arikaim::options()->createOption('current.path','',true);      
+        Arikaim::options()->createOption('default.language','en',true);   
     }
 
     /**

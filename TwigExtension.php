@@ -273,7 +273,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     */
     public function getCurrentUrl($full = true)
     {
-        $curentPath = $this->container->get('options')->get('current.path','');
+        $curentPath = BASE_PATH . $_SERVER['REQUEST_URI'];
 
         return ($full == true) ? DOMAIN . $curentPath : $curentPath;           
     }
