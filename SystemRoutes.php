@@ -111,12 +111,6 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\Options:get',
                 'middleware' => 'session'            
             ],          
-            // Update
-            [
-                'pattern'    => '/core/api/update/check/version',
-                'handler'    => 'Arikaim\Core\Api\Update:checkVersion',
-                'middleware' => 'session'            
-            ],
             // Mailer 
             [
                 'pattern'    => '/core/api/mailer/test/email',
@@ -296,6 +290,11 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\CronApi:installCron',
                 'middleware' => 'session'            
             ],
+            [
+                'pattern'    => '/core/api/queue/cron/run',
+                'handler'    => 'Arikaim\Core\Api\CronApi:run',
+                'middleware' => 'session'            
+            ],
             // Jobs
             [
                 'pattern'    => '/core/api/jobs/status',
@@ -318,17 +317,6 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\Drivers:saveConfig',
                 'middleware' => 'session'            
             ],
-            // Update  
-            [
-                'pattern'    => '/core/api/update/',
-                'handler'    => 'Arikaim\Core\Api\Update:update',
-                'middleware' => 'session'            
-            ],
-            [
-                'pattern'    => '/core/api/update/last/version',
-                'handler'    => 'Arikaim\Core\Api\Update:getLastVersion',
-                'middleware' => 'session'            
-            ],
             // Session
             [
                 'pattern'    => '/core/api/session/recreate',
@@ -344,6 +332,11 @@ class SystemRoutes
             [
                 'pattern'    => '/core/api/settings/install-page',
                 'handler'    => 'Arikaim\Core\Api\Settings:disableInstallPage',
+                'middleware' => 'session'            
+            ],
+            [
+                'pattern'    => '/core/api/settings/update/option',
+                'handler'    => 'Arikaim\Core\Api\Settings:updateOption',
                 'middleware' => 'session'            
             ],
             // Cache

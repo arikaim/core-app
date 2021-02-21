@@ -201,13 +201,12 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('getSystemRequirements',[$this,'getSystemRequirements']),                      
             new TwigFunction('package',[$this,'createPackageManager']),       
             new TwigFunction('service',[$this,'getService']),     
-            new TwigFunction('installConfig',[$this,'getInstallConfig']),   
+            new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
             new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),     
             new TwigFunction('access',[$this,'getAccess']),   
             new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),
             new TwigFunction('getVersion',[$this,'getVersion']),
             new TwigFunction('getLastVersion',[$this,'getLastVersion']),          
-            new TwigFunction('modules',[$this,'getModulesService']),
             new TwigFunction('create',[$this,'create']),  
 
             // session vars
@@ -386,16 +385,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
-     * Get modules service
-     *
-     * @return object|null
-     */
-    public function getModulesService()
-    {
-        return ($this->container->has('modules') == true) ? $this->container->get('modules') : null;
-    }
-
-    /**
      * Get session var
      *
      * @param string $name
@@ -564,13 +553,18 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Get install config data
      *
-     * @return array|false
+     * @param string $key
+     * @param mixed $default
+     * @return mixed|null|false
      */
-    public function getInstallConfig()
+    public function getConfigOption(string $key, $default = null)
     {
-        $daibled = $this->container->get('config')->getByPath('settings/disableInstallPage');
-       
-        return ($daibled == true) ? false : $this->container->get('config');         
+        if ($this->container->get('config')->hasReadAccess($key) == false) {
+            // access denied 
+            return false;
+        }
+
+        return $this->container->get('config')->getByPath($key,$default);         
     }
 
     /**

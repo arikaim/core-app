@@ -336,17 +336,11 @@ class Install
         Arikaim::options()->createOption('mailer.log',false,true);
         Arikaim::options()->createOption('mailer.log.error',false,true);
         Arikaim::options()->createOption('mailer.from.email','',true);
-        Arikaim::options()->createOption('mailer.from.name','',true);
-        // logger
-        Arikaim::options()->createOption('logger',true,true);     
-        Arikaim::options()->createOption('logger.handler','db',true);
+        Arikaim::options()->createOption('mailer.from.name','',true);        
         // session
         Arikaim::options()->createOption('session.recreation.interval',0,false);
         // library params
-        Arikaim::options()->createOption('library.params',[],true);
-        // language
-        Arikaim::options()->createOption('current.language','en',true);        
-        Arikaim::options()->createOption('default.language','en',true);   
+        Arikaim::options()->createOption('library.params',[],true);       
     }
 
     /**

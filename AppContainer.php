@@ -45,7 +45,24 @@ class AppContainer
         // Config
         $container['config'] = function($container) {    
             $cache = $container->get('cache');                         
-            $config = new \Arikaim\Core\System\Config('config.php',$cache,Path::CONFIG_PATH);         
+            $config = new \Arikaim\Core\System\Config('config.php',$cache,Path::CONFIG_PATH);
+            $config->setWriteProtectedVars([
+                'settings/jwtKey',
+                'settings/defaultLanguage',
+                'settings/disableInstallPage',
+                'settings/demoMode',
+                'db/username',
+                'db/password',
+                'db/driver',
+                'db/host',
+                'db/database'
+            ]);         
+            $config->setReadProtectedVars([
+                'settings/jwtKey',
+                'db/username',
+                'db/password'
+            ]);  
+
             return $config;
         }; 
         $cacheStatus = (bool)$container->get('config')->getByPath('settings/cache',false);
@@ -70,7 +87,7 @@ class AppContainer
         $container['view'] = function ($container) use($cacheStatus) {                            
             $cache = ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false;
             $debug = $container->get('config')['settings']['debug'] ?? true;
-            $demoMode = $container->get('config')['settings']['demo_mode'] ?? false;
+            $demoMode = $container->get('config')['settings']['demoMode'] ?? false;
             $primaryTemplate = $container->get('config')->getByPath('settings/primaryTemplate',Page::SYSTEM_TEMPLATE_NAME);
            
             $view = new \Arikaim\Core\View\View(
@@ -97,7 +114,7 @@ class AppContainer
         // Init page components.
         $container['page'] = function($container) {                     
             $libraryPrams = $container->get('options')->get('library.params',[]);
-            $defaultLanguage = $container->get('options')->get('default.language','en');     
+            $defaultLanguage = $container->get('config')->getString('defaultLanguage','en');     
                       
             return new Page($container->get('view'),$defaultLanguage,$libraryPrams);
         }; 
@@ -158,11 +175,11 @@ class AppContainer
 
         // Logger
         $container['logger'] = function($container) {   
-            $enabled = $container->get('options')->get('logger',true); 
-            $handlerName = $container->get('options')->get('logger.handler','file'); 
-
-            $logger = new \Arikaim\Core\Logger\Logger(Path::LOGS_PATH . 'errors.log',$enabled,$handlerName);
-            return $logger;
+            return new \Arikaim\Core\Logger\Logger(
+                Path::LOGS_PATH . 'errors.log',
+                $container->get('config')->getByPath('logger',false),
+                $container->get('config')->getByPath('loggerHandler','file')
+            );           
         };      
 
         // Mailer
