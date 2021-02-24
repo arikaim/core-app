@@ -300,14 +300,9 @@ class Install
      */
     private function registerCoreEvents(): void
     {
-        Arikaim::event()->registerEvent('core.extension.update','After update extension.');
-        Arikaim::event()->registerEvent('core.extension.download','After download extension.');
         // Routes
         Arikaim::event()->registerEvent('core.route.disable','After disable route.');
-        // UI Library
-        Arikaim::event()->registerEvent('core.library.download','After download UI Library.');
-        // System       
-        Arikaim::event()->registerEvent('core.update','After update.'); 
+        Arikaim::event()->registerEvent('core.route.enable','After disable route.');
     } 
 
     /**
