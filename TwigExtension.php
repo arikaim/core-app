@@ -204,8 +204,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
             new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),     
             new TwigFunction('access',[$this,'getAccess']),   
-            new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),
-            new TwigFunction('getVersion',[$this,'getVersion']),
+            new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),          
             new TwigFunction('getLastVersion',[$this,'getLastVersion']),          
             new TwigFunction('create',[$this,'create']),  
 
@@ -576,19 +575,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function getSystemRequirements()
     {
         return Install::checkSystemRequirements();
-    }
-
-    /**
-     * Get composer package current version
-     *
-     * @param string|null $packageName
-     * @return string|false
-     */
-    public function getVersion($packageName = null)
-    {
-        $packageName = (empty($packageName) == true) ? ARIKAIM_PACKAGE_NAME : $packageName;       
-
-        return Composer::getInstalledPackageVersion($packageName);     
     }
 
     /**
