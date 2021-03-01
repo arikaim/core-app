@@ -282,13 +282,14 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @param string $name
      * @param array|null $params
+     * @param string $type
      * @return string
      */
-    public function loadComponent(&$context, $name, $params = [])
+    public function loadComponent(&$context, $name, $params = [], $type = 'arikaim')
     {        
         $language = $context['current_language'] ?? null;
-    
-        return $this->container->get('page')->createHtmlComponent($name,$params,$language,true)->load();     
+
+        return $this->container->get('page')->createHtmlComponent($name,$params,$language,true,$type)->load();     
     }
 
     /**

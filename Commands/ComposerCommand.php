@@ -58,11 +58,11 @@ class ComposerCommand extends ConsoleCommand
         });
 
         ComposerEvents::onPackageUpdate(function($package) {
-            $this->writeLn( ConsoleHelper::checkMark() . $package->getName());   
+            $this->writeLn(ConsoleHelper::checkMark() . $package->getName());   
         });
 
         ComposerEvents::onPackageInstall(function($package) {
-            $this->writeLn( ConsoleHelper::checkMark() . $package->getName());   
+            $this->writeLn(ConsoleHelper::checkMark() . $package->getName());   
         });
 
         Composer::run($command,$packageName);  
