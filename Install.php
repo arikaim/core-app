@@ -470,7 +470,7 @@ class Install
      * 
      * @return array
      */
-    public static function checkSystemRequirements()
+    public static function checkSystemRequirements(): array
     {
         $info['items'] = [];
         $info['errors']['messages'] = '';
@@ -480,7 +480,7 @@ class Install
         $phpVersion = System::getPhpVersion();
         $item['message'] = 'PHP ' . $phpVersion;
         $item['status'] = 0; // error   
-        if (\version_compare($phpVersion,'7.1','>=') == true) {               
+        if (\version_compare($phpVersion,'7.2','>=') == true) {               
             $item['status'] = 1; // ok                    
         } else {
             \array_push($errors,Arikaim::errors()->getError('PHP_VERSION_ERROR'));

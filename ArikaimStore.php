@@ -58,6 +58,16 @@ class ArikaimStore
     }
 
     /**
+     * Create obj
+     *
+     * @return Self
+     */
+    public static function create()
+    {
+        return new Self();
+    }
+
+    /**
      * Get config refernce
      *
      * @return Collection

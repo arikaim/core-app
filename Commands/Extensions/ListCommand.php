@@ -52,7 +52,7 @@ class ListCommand extends ConsoleCommand
             $package = $manager->createPackage($name);
             $extension = $package->getProperties();
 
-            $status = ConsoleHelper::getStatusText($extension->status);
+            $status = ConsoleHelper::getStatusText($extension->status ?? 0);
             $installed = ConsoleHelper::getYesNoText($extension->installed);
             $row = [$extension->name,$extension->version,$status,$installed]; 
 
