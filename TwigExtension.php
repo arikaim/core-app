@@ -716,7 +716,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string $extension
      * @return object|null
      */
-    public function create(string $class, string $extension)
+    public function create(string $class, ?string $extension = null)
     {
         $class = Factory::getExtensionClassName($extension,$class);
         
