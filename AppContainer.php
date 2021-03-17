@@ -177,8 +177,8 @@ class AppContainer
         $container['logger'] = function($container) {   
             return new \Arikaim\Core\Logger\Logger(
                 Path::LOGS_PATH . 'errors.log',
-                $container->get('config')->getByPath('logger',false),
-                $container->get('config')->getByPath('loggerHandler','file')
+                $container->get('config')->getByPath('settings/logger',false),
+                $container->get('config')->getByPath('settings/loggerHandler','file')
             );           
         };      
 
