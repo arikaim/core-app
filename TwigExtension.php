@@ -414,6 +414,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('attr',['Arikaim\\Core\\View\\Template\\Filters','attr'],['is_safe' => ['html']]),           
             new TwigFilter('getAttr',['Arikaim\\Core\\Utils\\Html','getAttributes'],['is_safe' => ['html']]),
             new TwigFilter('decode',['Arikaim\\Core\\Utils\\Html','specialcharsDecode'],['is_safe' => ['html']]),
+            new TwigFilter('createHtmlId',['Arikaim\\Core\\Utils\\Html','createId'],['is_safe' => ['html']]),
             // other
             new TwigFilter('ifthen',['Arikaim\\Core\\View\\Template\\Filters','is']),
             new TwigFilter('dump',['Arikaim\\Core\\View\\Template\\Filters','dump']),
