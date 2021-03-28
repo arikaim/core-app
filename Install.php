@@ -336,12 +336,7 @@ class Install
      * @return void
      */
     private function initDefaultOptions(): void
-    {
-        // add date formats options
-        Arikaim::options()->createOption('date.format',null,true);
-        Arikaim::options()->createOption('time.format',null,true);
-        Arikaim::options()->createOption('number.format',null,true);
-        Arikaim::options()->createOption('time.zone',DateTime::getTimeZoneName(),true);        
+    {        
         // mailer
         Arikaim::options()->createOption('mailer.driver',null,true);
         Arikaim::options()->createOption('mailer.email.compillers',[],true);

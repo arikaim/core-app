@@ -71,17 +71,6 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\Ui\Component:loadComponent',
                 'middleware' => null            
             ],
-            // UI Page
-            [
-                'pattern'    => '/core/api/ui/page/{name}',
-                'handler'    => 'Arikaim\Core\Api\Ui\Page:loadPageHtml',
-                'middleware' => null            
-            ],
-            [
-                'pattern'    => '/core/api/ui/page/properties/',
-                'handler'    => 'Arikaim\Core\Api\Ui\Page:loadPageProperties',
-                'middleware' => null            
-            ],
             // UI Library
             [
                 'pattern'    => '/core/api/ui/library/{name}',

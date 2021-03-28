@@ -37,15 +37,10 @@ class AppContainer
     public static function create(bool $console = false)
     {
         $container = new Container();
-        // Cache 
-        $container['cache'] = function($container) {                    
-            $routeCacheFile = Path::CACHE_PATH . '/routes.cache.php';                   
-            return new Cache(Path::CACHE_PATH,$routeCacheFile,Cache::ARRAY_DRIVER,true);
-        };
+
         // Config
-        $container['config'] = function($container) {    
-            $cache = $container->get('cache');                         
-            $config = new \Arikaim\Core\System\Config('config.php',$cache,Path::CONFIG_PATH);
+        $container['config'] = function($container) {                            
+            $config = new \Arikaim\Core\System\Config('config.php',null,Path::CONFIG_PATH);
             $config->setWriteProtectedVars([
                 'settings/jwtKey',
                 'settings/defaultLanguage',
@@ -65,12 +60,17 @@ class AppContainer
 
             return $config;
         }; 
-        $cacheStatus = (bool)$container->get('config')->getByPath('settings/cache',false);
 
-        // init cache status
-        $container->get('cache')->setStatus($cacheStatus);
-        $container->get('cache')->setDriver($container->get('config')->getByPath('settings/cacheDriver',Cache::FILESYSTEM_DRIVER));
+        // Cache 
+        $container['cache'] = function($container) {                    
+            $routeCacheFile = Path::CACHE_PATH . '/routes.cache.php';  
+            $driver = $container['config']['settings']['cacheDriver'] ?? Cache::VOID_DRIVER;
+            $enabled = $container['config']['settings']['cache'] ?? false;    
+            $saveTime = $container['config']['settings']['cacheSaveTime'] ?? 7;    
 
+            return new Cache(Path::CACHE_PATH,$routeCacheFile,$driver,$enabled,$saveTime);
+        };
+      
         // Storage
         $container['storage'] = function($container) {
             return new \Arikaim\Core\Storage\Storage();
@@ -83,15 +83,27 @@ class AppContainer
         $container['packages'] = function($container) {     
             return new PackageManagerFactory($container['cache'],$container['storage'],$container['http']);          
         };
+        // Access
+        $container['access'] = function($container) {
+            $user = Model::Users();  
+            $permissions = Model::PermissionRelations();    
+            $jwtKey = $container['config']['settings']['jwtKey'] ?? 'jwtKey';
+
+            return new \Arikaim\Core\Access\Access($permissions,$user,null,['key' => $jwtKey]);          
+        };
         // Init template view. 
-        $container['view'] = function ($container) use($cacheStatus) {                            
+        $container['view'] = function ($container) {      
+            $cacheStatus = $container['config']['settings']['cache'] ?? false;                          
             $cache = ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false;
-            $debug = $container->get('config')['settings']['debug'] ?? true;
-            $demoMode = $container->get('config')['settings']['demoMode'] ?? false;
-            $primaryTemplate = $container->get('config')->getByPath('settings/primaryTemplate',Page::SYSTEM_TEMPLATE_NAME);
-           
+            $debug = $container['config']['settings']['debug'] ?? false;
+            $demoMode = $container['config']['settings']['demoMode'] ?? false;
+            $primaryTemplate = $container['config']['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME;
+       
             $view = new \Arikaim\Core\View\View(
                 $container['cache'],
+                [
+                    'access' => $container['access']
+                ],
                 Path::VIEW_PATH,
                 Path::EXTENSIONS_PATH, 
                 Path::TEMPLATES_PATH,
@@ -105,40 +117,40 @@ class AppContainer
             );           
 
             // Add twig extension
-            $twigExtension = new TwigExtension(BASE_PATH,Path::VIEW_PATH,$container);
+            $twigExtension = new TwigExtension(BASE_PATH,Path::VIEW_PATH);
             $view->addExtension($twigExtension);
             $view->setPrimaryTemplate($primaryTemplate); 
 
+            // Set date and time, number formats   
+            Number::setFormat($container['config']['settings']['numberFormat'] ?? null);        
+            DateTime::setTimeZone($container['config']['settings']['timeZone'] ?? DateTime::getTimeZoneName());                 
+            DateTime::setDateFormat($container['config']['settings']['dateFormat'] ?? null);           
+            DateTime::setTimeFormat($container['config']['settings']['timeFormat'] ?? null);  
+
             return $view;
         };    
-        // Init page components.
+        // Init page view.
         $container['page'] = function($container) {                     
             $libraryPrams = $container->get('options')->get('library.params',[]);
-            $defaultLanguage = $container->get('config')->getString('defaultLanguage','en');     
+            $defaultLanguage = $container['config']['settings']['defaultLanguage'] ?? 'en';     
                       
             return new Page($container->get('view'),$defaultLanguage,$libraryPrams);
         }; 
+
         // Errors  
-        $container['errors'] = function($container) use ($console) {
+        $container['errors'] = function() use ($console) {
             return new \Arikaim\Core\System\Error\Errors(
                 Path::CONFIG_PATH . 'errors.json',
                 Path::CONFIG_PATH . 'console-errors.json',
                 $console
             );          
         };
-        // Access
-        $container['access'] = function($container) {
-            $user = Model::Users();  
-            $permissins = Model::PermissionRelations();    
-            $jwtKey = $container['config']->getByPath('settings/jwtKey','jwtKey');
-
-            return new \Arikaim\Core\Access\Access($permissins,$user,null,['key' => $jwtKey]);          
-        };
+      
         // Init Eloquent ORM
         $container['db'] = function($container) {  
             try {  
-                $relations = $container->get('config')->load('relations.php');
-                $db = new \Arikaim\Core\Db\Db($container->get('config')['db'],$relations);
+                $relations = $container->get('config')->load('relations.php',false);
+                $db = new \Arikaim\Core\Db\Db($container['config']['db'],$relations);
             } catch(PDOException $e) {
                 if (Install::isInstalled() == false) {
                     // not installed
@@ -147,6 +159,7 @@ class AppContainer
             return $db;
         };     
 
+        // boot db
         $container['db'];
 
         // Routes
@@ -155,17 +168,8 @@ class AppContainer
         };
         // Options
         $container['options'] = function($container) { 
-            $optionsStorage = ($container['db']->hasError() == false) ? Model::Options(): null;                    
-            $options = new \Arikaim\Core\Options\Options($container->get('cache'),$optionsStorage);    
-          
-            Number::setFormat($options->getString('number.format',null));
-            // Set time zone
-            DateTime::setTimeZone($options->getString('time.zone',null));
-            // Set date and time formats          
-            DateTime::setDateFormat($options->getString('date.format',null));           
-            DateTime::setTimeFormat($options->getString('time.format',null));  
-            
-            return $options;
+            $optionsStorage = ($container['db']->hasError() == false) ? Model::Options() : null;                    
+            return new \Arikaim\Core\Options\Options($container->get('cache'),$optionsStorage);               
         };     
        
         // Drivers
@@ -177,10 +181,17 @@ class AppContainer
         $container['logger'] = function($container) {   
             return new \Arikaim\Core\Logger\Logger(
                 Path::LOGS_PATH . 'errors.log',
-                $container->get('config')->getByPath('settings/logger',false),
-                $container->get('config')->getByPath('settings/loggerHandler','file')
+                $container['config']['settings']['logger'] ?? false,
+                $container['config']['settings']['loggerHandler'] ?? 'file'
             );           
         };      
+
+        // Init email view.
+        $container['email'] = function($container) {                     
+            $defaultLanguage = $container['config']['settings']['defaultLanguage'] ?? 'en';     
+                    
+            return new \Arikaim\Core\View\Html\EmailView($container->get('view'),$defaultLanguage);
+        }; 
 
         // Mailer
         $container['mailer'] = function($container) {
@@ -197,16 +208,15 @@ class AppContainer
             if ($driver === false) {
                 $driver = null;
             }
-            return new \Arikaim\Core\Mail\Mailer($mailerOptions,$container['page'],$driver,$container['logger']);
+            
+            return new \Arikaim\Core\Mail\Mailer($mailerOptions,$container['email'],$driver,$container['logger']);
         };
 
         // Events manager 
         $container['event'] = function($container) {
-            $options = [
-                'log' => $container['config']->getByPath('settings/logEvents',false) 
-            ];
-
-            return new EventsManager(Model::Events(),Model::EventSubscribers(),$container['logger'],$options);
+            return new EventsManager(Model::Events(),Model::EventSubscribers(),$container['logger'],[
+                'log' => $container['config']['settings']['logEvents'] ?? false 
+            ]);
         };
         // Jobs queue
         $container['queue'] = function($container) {           
@@ -216,8 +226,7 @@ class AppContainer
         // Modules manager
         $container['modules'] = function($container) {           
             return new \Arikaim\Core\Extension\Modules($container->get('cache'));
-        }; 
-        
+        };         
         // Service manager
         $container['service'] = function() {           
             return new \Arikaim\Core\Service\ServiceContainer();
