@@ -129,7 +129,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             'system_template_name'  => Page::SYSTEM_TEMPLATE_NAME,
             'domain'                => (\defined('DOMAIN') == true) ? DOMAIN : null,
             'base_url'              => Url::BASE_URL,     
-            'base_path'             => $this->basePath,        
+            'base_path'             => $this->basePath,     
+            'templates_path'        => Path::TEMPLATES_PATH,   
             'DIRECTORY_SEPARATOR'   => DIRECTORY_SEPARATOR,        
             'ui_path'               => $this->basePath . $this->viewPath,   
         ];
@@ -406,6 +407,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('baseClass',['Arikaim\\Core\\Utils\\Utils','getBaseClassName']),                        
             // text
             new TwigFilter('renderText',['Arikaim\\Core\\Utils\\Text','render']),
+            new TwigFilter('renderArray',['Arikaim\\Core\\Utils\\Text','renderMultiple']),
             new TwigFilter('sliceText',['Arikaim\\Core\\Utils\\Text','sliceText']),
             new TwigFilter('titleCase',['Arikaim\\Core\\Utils\\Text','convertToTitleCase']),
             new TwigFilter('md',[$this,'parseMarkdown']),
