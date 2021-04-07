@@ -98,7 +98,8 @@ class AppContainer
             $debug = $container['config']['settings']['debug'] ?? false;
             $demoMode = $container['config']['settings']['demoMode'] ?? false;
             $primaryTemplate = $container['config']['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME;
-       
+            $templateTheme = $container['config']['settings']['templateTheme'] ?? null;
+
             $view = new \Arikaim\Core\View\View(
                 $container['cache'],
                 [
@@ -113,7 +114,8 @@ class AppContainer
                     'demo_mode'  => $demoMode,
                     'autoescape' => false
                 ],
-                $primaryTemplate
+                $primaryTemplate,
+                $templateTheme
             );           
 
             // Add twig extension
