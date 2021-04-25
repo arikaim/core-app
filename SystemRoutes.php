@@ -273,28 +273,6 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\Options:save',
                 'middleware' => 'session'            
             ],
-            // Cron  
-            [
-                'pattern'    => '/core/api/queue/cron/install',
-                'handler'    => 'Arikaim\Core\Api\CronApi:installCron',
-                'middleware' => 'session'            
-            ],
-            [
-                'pattern'    => '/core/api/queue/cron/run',
-                'handler'    => 'Arikaim\Core\Api\CronApi:run',
-                'middleware' => 'session'            
-            ],
-            // Jobs
-            [
-                'pattern'    => '/core/api/jobs/status',
-                'handler'    => 'Arikaim\Core\Api\Jobs:setStatus',
-                'middleware' => 'session'            
-            ],
-            [
-                'pattern'    => '/core/api/jobs/config',
-                'handler'    => 'Arikaim\Core\Api\Jobs:saveConfig',
-                'middleware' => 'session'            
-            ],
             // Drivers 
             [
                 'pattern'    => '/core/api/driver/status',
@@ -457,18 +435,6 @@ class SystemRoutes
             [
                 'pattern'    => '/core/api/language/{uuid}',
                 'handler'    => 'Arikaim\Core\Api\Language:remove',
-                'middleware' => 'session'            
-            ],
-            // Cron  
-            [
-                'pattern'    => '/core/api/queue/cron/uninstall',
-                'handler'    => 'Arikaim\Core\Api\CronApi:unInstallCron',
-                'middleware' => 'session'            
-            ],
-            // Jobs
-            [
-                'pattern'    => '/core/api/jobs/delete/{uuid}',
-                'handler'    => 'Arikaim\Core\Api\Jobs:deleteJob',
                 'middleware' => 'session'            
             ],
             // Access tokens 

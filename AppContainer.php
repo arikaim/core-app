@@ -61,6 +61,9 @@ class AppContainer
             return $config;
         }; 
 
+        // constants 
+        define('DEFAULT_TIME_ZONE',$container['config']['settings']['timeZone']);
+
         // Cache 
         $container['cache'] = function($container) {                    
             $routeCacheFile = Path::CACHE_PATH . '/routes.cache.php';  
@@ -124,8 +127,7 @@ class AppContainer
             $view->setPrimaryTemplate($primaryTemplate); 
 
             // Set date and time, number formats   
-            Number::setFormat($container['config']['settings']['numberFormat'] ?? null);        
-            DateTime::setTimeZone($container['config']['settings']['timeZone'] ?? DateTime::getTimeZoneName());                 
+            Number::setFormat($container['config']['settings']['numberFormat'] ?? null);                             
             DateTime::setDateFormat($container['config']['settings']['dateFormat'] ?? null);           
             DateTime::setTimeFormat($container['config']['settings']['timeFormat'] ?? null);  
 
@@ -163,15 +165,14 @@ class AppContainer
 
         // boot db
         $container['db'];
-
+       
         // Routes
         $container['routes'] = function($container) {            
             return new Routes(Model::Routes(),$container['cache']);  
         };
         // Options
-        $container['options'] = function($container) { 
-            $optionsStorage = ($container['db']->hasError() == false) ? Model::Options() : null;                    
-            return new \Arikaim\Core\Options\Options($container->get('cache'),$optionsStorage);               
+        $container['options'] = function($container) {                             
+            return new \Arikaim\Core\Options\Options($container->get('cache'), Model::Options());               
         };     
        
         // Drivers

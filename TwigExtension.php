@@ -36,8 +36,6 @@ use Arikaim\Core\View\Template\Tags\MdTagParser;
  */
 class TwigExtension extends AbstractExtension implements GlobalsInterface
 {
-    const VIEW_SERVICES_FILE_NAME = 'view-services.php';
-
     /**
      * Model classes requires control panel access 
      *
@@ -96,26 +94,15 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     protected $markdownParser;
 
     /**
-     * View services 
-     *
-     * @var array
-     */
-    protected $viewServices = [];
-
-    /**
      * Constructor
      *
      * @param string $basePath
      * @param string $viewpath
      */
-    public function __construct($basePath, $viewPath)
+    public function __construct(string $basePath, string $viewPath)
     {       
         $this->basePath = $basePath;
-        $this->viewPath = $viewPath;
-     
-        // include view services
-        $viewServices = @include(Path::CONFIG_PATH . Self::VIEW_SERVICES_FILE_NAME);
-        $this->viewServices = (\is_array($viewServices) == true) ? $viewServices : [];          
+        $this->viewPath = $viewPath;                   
     }
 
     /**
@@ -151,7 +138,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
                 'is_safe'           => ['html']
             ]),                    
             // page              
-            new TwigFunction('url',[$this,'getUrl']),        
+            new TwigFunction('url',[Page::class,'getUrl']),        
             new TwigFunction('currentUrl',[$this,'getCurrentUrl']),
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
@@ -187,7 +174,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('service',[$this,'getService']),     
             new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
             new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),     
-            new TwigFunction('access',[$this,'getAccess']),   
+            new TwigFunction('access',[Arikaim::class,'access']),   
             new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),                          
             new TwigFunction('create',[$this,'create']),  
 
@@ -211,7 +198,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             // date and time
             new TwigFunction('getTimeZonesList',['Arikaim\\Core\\Utils\\DateTime','getTimeZonesList']),
             new TwigFunction('timeInterval',['Arikaim\\Core\\Utils\\TimeInterval','getInterval']),          
-            new TwigFunction('currentYear',[$this,'currentYear']),
+            new TwigFunction('currentYear',['Arikaim\\Core\\Utils\\DateTime','getCurrentYear']),
             new TwigFunction('today',['Arikaim\\Core\\Utils\\DateTime','getTimestamp']),
             // unique Id
             new TwigFunction('createUuid',['Arikaim\\Core\\Utils\\Uuid','create']),
@@ -221,7 +208,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('createProperties',['Arikaim\\Core\\Collection\\PropertiesFactory','createFromArray']),
         ];    
      
-        return \array_merge($functions,$this->viewServices['functions'] ?? []);
+        return $functions;
     }
 
     /**
@@ -242,12 +229,12 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string|null $language
      * @return string
      */
-    public function getUrl($path = '', $full = false, $language = null)
-    {
-        $path = $path ?? '';
+   // public function getUrl($path = '', $full = false, $language = null)
+   // {
+      //  $path = $path ?? '';
         
-        return Page::getUrl($path,$full,$language);
-    }
+     //   return Page::getUrl($path,$full,$language);
+  //  }
 
     /**
      * Return url link with current language code
@@ -270,7 +257,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string|null $type
      * @return string
      */
-    public function loadComponent($name, $params = [], ?string $type = null)
+    public function loadComponent(string $name, $params = [], ?string $type = null)
     {              
         $params = (\is_array($params) == false) ? [] : $params;
         $component = Arikaim::get('page')->renderHtmlComponent($name,$params,null,$type);
@@ -432,7 +419,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('relativePath',['Arikaim\\Core\\Utils\\Path','getRelativePath'])
         ];
        
-        return \array_merge($filters,$this->viewServices['filters'] ?? []);
+        return $filters;
     }
 
     /**
@@ -446,7 +433,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigTest('haveSubItems',['Arikaim\\Core\\Utils\\Arrays','haveSubItems']),
             new TwigTest('object',['Arikaim\\Core\\View\\Template\\Tests','isObject']),
             new TwigTest('string',['Arikaim\\Core\\View\\Template\\Tests','isString']),
-            new TwigTest('access',[$this,'hasAccess']),
             new TwigTest('versionCompare',['Arikaim\\Core\\View\\Template\\Tests','versionCompare'])
         ];
     }
@@ -469,10 +455,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return object
      */
-    public function getAccess()
-    {
-        return Arikaim::get('access');
-    } 
+  //  public function getAccess()
+  //  {
+   //     return Arikaim::get('access');
+   // } 
 
     /**
      * Create arikaim store instance
@@ -617,7 +603,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string $extension
      * @return boolean
      */
-    public function hasExtension($extension)
+    public function hasExtension(string $extension): bool
     {
         $model = Model::Extensions()->where('name','=',$extension)->first();  
 
@@ -630,11 +616,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string $name
      * @return boolean
      */
-    public function hasModule($name)
+    public function hasModule(string $name): bool
     {
         return Arikaim::get('modules')->hasModule($name);              
     }
-
 
     /**
      * Return file type
@@ -647,16 +632,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         return \pathinfo($fileName,PATHINFO_EXTENSION);
     }
 
-    /**
-     * Return current year
-     *
-     * @return string
-     */
-    public function currentYear()
-    {
-        return \date('Y');
-    }
-    
     /**
      * Return current language
      *
@@ -762,18 +737,5 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         }
 
         return $this->markdownParser->text($content);
-    }
-
-    /**
-     * Check access 
-     *
-     * @param string $name Permission name
-     * @param string|array $type PermissionType (read,write,execute,delete)   
-     * @param mixed $authId 
-     * @return boolean
-     */
-    public function hasAccess($name, $type = null, $authId = null)
-    {
-        return Arikaim::get('access')->hasAccess($name,$type,$authId);
     }
 }

@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App;
 
 use Arikaim\Core\Interfaces\Access\AccessInterface;
-use Arikaim\Core\Utils\DateTime;
 use Arikaim\Core\Arikaim;
 use Arikaim\Core\Db\Schema;
 use Arikaim\Core\Db\Model;
@@ -434,13 +433,16 @@ class Install
      */
     public static function isInstalled(): bool 
     {
-        $errors = 0;      
+        $errors = 0;            
         try {
+            Arikaim::get('db')->initSchemaConnection(); 
+            
             // check db
             $errors += Arikaim::db()->has(Arikaim::config()->getByPath('db/database')) ? 0 : 1;
             if ($errors > 0) {
                 return false;
             }
+
             // check db tables
             $tables = Self::getSystemDbTableNames();
             foreach ($tables as $tableName) {
