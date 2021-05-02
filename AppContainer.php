@@ -96,13 +96,8 @@ class AppContainer
         };
         // Init template view. 
         $container['view'] = function ($container) {      
-            $cacheStatus = $container['config']['settings']['cache'] ?? false;                          
-            $cache = ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false;
-            $debug = $container['config']['settings']['debug'] ?? false;
-            $demoMode = $container['config']['settings']['demoMode'] ?? false;
-            $primaryTemplate = $container['config']['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME;
-            $templateTheme = $container['config']['settings']['templateTheme'] ?? null;
-
+            $cacheStatus = $container['config']['settings']['cache'] ?? false;                                            
+           
             $view = new \Arikaim\Core\View\View(
                 $container['cache'],
                 [
@@ -112,20 +107,19 @@ class AppContainer
                 Path::EXTENSIONS_PATH, 
                 Path::TEMPLATES_PATH,
                 Path::COMPONENTS_PATH,[
-                    'cache'      => $cache,
-                    'debug'      => $debug,
-                    'demo_mode'  => $demoMode,
+                    'cache'      => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
+                    'debug'      => $container['config']['settings']['debug'] ?? false,
+                    'demo_mode'  => $container['config']['settings']['demoMode'] ?? false,
                     'autoescape' => false
                 ],
-                $primaryTemplate,
-                $templateTheme
+                $container['config']['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME,
+                $container['config']['settings']['templateTheme'] ?? null
             );           
 
             // Add twig extension
             $twigExtension = new TwigExtension(BASE_PATH,Path::VIEW_PATH);
             $view->addExtension($twigExtension);
-            $view->setPrimaryTemplate($primaryTemplate); 
-
+           
             // Set date and time, number formats   
             Number::setFormat($container['config']['settings']['numberFormat'] ?? null);                             
             DateTime::setDateFormat($container['config']['settings']['dateFormat'] ?? null);           
