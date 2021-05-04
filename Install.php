@@ -378,6 +378,8 @@ class Install
      */
     private function createDbTables($onProgress = null, $onError = null, $stopOnError = true)
     {                        
+        Arikaim::get('db')->reboot();
+        
         $classes = $this->getSystemSchemaClasses();
         $result = true;
         try {
