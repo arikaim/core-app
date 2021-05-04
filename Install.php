@@ -145,8 +145,6 @@ class Install
         }
         $this->callback($onProgress,'Database status ok.');
        
-        Arikaim::options()->setStorageAdapter(Model::Options());
-
         // Create Arikaim DB tables
         $result = $this->createDbTables(function($class) use ($onProgress) {
             $this->callback($onProgress,'Db table model created ' . $class);
@@ -336,6 +334,8 @@ class Install
      */
     private function initDefaultOptions(): void
     {        
+        Arikaim::options()->setStorageAdapter(Model::Options());
+        
         // mailer
         Arikaim::options()->createOption('mailer.driver',null,true);
         Arikaim::options()->createOption('mailer.email.compillers',[],true);
