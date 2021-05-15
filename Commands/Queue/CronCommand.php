@@ -15,7 +15,7 @@ use Arikaim\Core\System\System;
 use Arikaim\Core\Arikaim;
 use Arikaim\Core\Utils\DateTime;
 use Arikaim\Core\Interfaces\Job\JobLogInterface;
-use Arikaim\Core\Interfaces\Job\RecuringJobInterface;
+use Arikaim\Core\Interfaces\Job\RecurringJobInterface;
 use Arikaim\Core\Interfaces\Job\ScheduledJobInterface;
 use Exception;
 
@@ -75,7 +75,7 @@ class CronCommand extends ConsoleCommand
         foreach ($jobs as $item) {
             $job = Arikaim::queue()->createJobFromArray($item);
         
-            $isDue = ($job instanceof RecuringJobInterface || $job instanceof ScheduledJobInterface) ? $job->isDue() : true;            
+            $isDue = ($job instanceof RecurringJobInterface || $job instanceof ScheduledJobInterface) ? $job->isDue() : true;            
             if ($isDue == false) {             
                 continue;
             }
@@ -87,7 +87,7 @@ class CronCommand extends ConsoleCommand
                     function($mesasge) {
                         $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
                     },function($error) {
-                        $this->writeLn('  ' .ConsoleHelper::errorMark() . ' Error ' . $error);
+                        $this->writeLn('  ' . ConsoleHelper::errorMark() . ' Error ' . $error);
                     }
                 );
 

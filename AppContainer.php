@@ -61,9 +61,6 @@ class AppContainer
             return $config;
         }; 
 
-        // constants 
-        define('DEFAULT_TIME_ZONE',$container['config']['settings']['timeZone'] ?? \date_default_timezone_get());
-
         // Cache 
         $container['cache'] = function($container) {                    
             $routeCacheFile = Path::CACHE_PATH . '/routes.cache.php';  
