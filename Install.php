@@ -181,7 +181,7 @@ class Install
         // create admin user if not exists       
         $result = $this->createDefaultAdminUser();
         if ($result === false) {
-            $this->callback($onProgressError,'Error creating control panel user');
+            $this->callback($onProgressError,'Error creating control panel user.');
             return false;
         }
         $this->callback($onProgress,'Control panel user created.');      
@@ -193,7 +193,7 @@ class Install
         // install drivers
         $result = $this->installDrivers();
         if ($result === false) {
-            $this->callback($onProgressError,'Error register cache driver');
+            $this->callback($onProgressError,'Error register cache driver.');
         }
 
         // set storage folders              
