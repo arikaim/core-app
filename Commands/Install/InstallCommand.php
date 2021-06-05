@@ -101,7 +101,7 @@ class InstallCommand extends ConsoleCommand
         $databasePassword = $helper->ask($input, $output, $question);
 
         $this->style->newLine();
-        $question = new ConfirmationQuestion ("\t Start installation [yes]: ",true);
+        $question = new ConfirmationQuestion("\t Start installation [yes]: ",true);
         $start = $helper->ask($input, $output, $question);     
         $this->style->newLine();
 

@@ -73,37 +73,11 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     ];
 
     /**
-     * Base path
-     *
-     * @var string
-     */
-    protected $basePath;
-
-    /**
-     * View path
-     *
-     * @var string
-     */
-    protected $viewpath;
-
-    /**
      * Markdown parser
      *
      * @var object
      */
     protected $markdownParser;
-
-    /**
-     * Constructor
-     *
-     * @param string $basePath
-     * @param string $viewpath
-     */
-    public function __construct(string $basePath, string $viewPath)
-    {       
-        $this->basePath = $basePath;
-        $this->viewPath = $viewPath;                   
-    }
 
     /**
      * Rempate engine global variables
@@ -116,10 +90,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             'system_template_name'  => Page::SYSTEM_TEMPLATE_NAME,
             'domain'                => (\defined('DOMAIN') == true) ? DOMAIN : null,
             'base_url'              => Url::BASE_URL,     
-            'base_path'             => $this->basePath,     
+            'base_path'             => BASE_PATH,     
             'templates_path'        => Path::TEMPLATES_PATH,   
             'DIRECTORY_SEPARATOR'   => DIRECTORY_SEPARATOR,        
-            'ui_path'               => $this->basePath . $this->viewPath,   
+            'ui_path'               => BASE_PATH . Path::VIEW_PATH,   
         ];
     }
 
@@ -171,7 +145,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('system',[$this,'system']),  
             new TwigFunction('getSystemRequirements',['Arikaim\\Core\\App\\Install','checkSystemRequirements']),                      
             new TwigFunction('package',[$this,'createPackageManager']),       
-            new TwigFunction('service',[$this,'getService']),     
+            new TwigFunction('service',[$this,'getService']),    
+            new TwigFunction('content',['Arikaim\\Core\\Arikaim','content']),     
             new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
             new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),     
             new TwigFunction('access',[Arikaim::class,'access']),   
@@ -220,21 +195,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         return Arikaim::get('db')->getRelationsMap();
     }
-
-    /**
-     * Return url link with current language code
-     *
-     * @param string $path
-     * @param boolean $full
-     * @param string|null $language
-     * @return string
-     */
-   // public function getUrl($path = '', $full = false, $language = null)
-   // {
-      //  $path = $path ?? '';
-        
-     //   return Page::getUrl($path,$full,$language);
-  //  }
 
     /**
      * Return url link with current language code
@@ -295,7 +255,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function loadLibraryFile($library, $fileName)
     {      
-        $file = $this->viewPath . 'library' . DIRECTORY_SEPARATOR . $library . DIRECTORY_SEPARATOR . $fileName;
+        $file = Path::VIEW_PATH . 'library' . DIRECTORY_SEPARATOR . $library . DIRECTORY_SEPARATOR . $fileName;
         $content = File::read($file);
 
         return $content ?? '';
@@ -449,16 +409,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new MdTagParser(Self::class)
         ];
     }   
-
-    /**
-     * Get accesss
-     *
-     * @return object
-     */
-  //  public function getAccess()
-  //  {
-   //     return Arikaim::get('access');
-   // } 
 
     /**
      * Create arikaim store instance

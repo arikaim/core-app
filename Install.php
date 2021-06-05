@@ -335,18 +335,13 @@ class Install
     private function initDefaultOptions(): void
     {        
         Arikaim::options()->setStorageAdapter(Model::Options());
-        
         // mailer
         Arikaim::options()->createOption('mailer.driver',null,true);
         Arikaim::options()->createOption('mailer.email.compillers',[],true);
         Arikaim::options()->createOption('mailer.log',false,true);
         Arikaim::options()->createOption('mailer.log.error',false,true);
         Arikaim::options()->createOption('mailer.from.email','',true);
-        Arikaim::options()->createOption('mailer.from.name','',true);        
-        // session
-        Arikaim::options()->createOption('session.recreation.interval',0,false);
-        // library params
-        Arikaim::options()->createOption('library.params',[],true);       
+        Arikaim::options()->createOption('mailer.from.name','',true);                   
     }
 
     /**

@@ -10,17 +10,12 @@
 namespace Arikaim\Core\App;
 
 use Arikaim\Container\Container;
-use Arikaim\Core\Events\EventsManager;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\Cache\Cache;
 use Arikaim\Core\Utils\Path;
 use Arikaim\Core\App\TwigExtension;
-use Arikaim\Core\Packages\PackageManagerFactory;
 use Arikaim\Core\Routes\Routes;
-use Arikaim\Core\App\Install;
 use Arikaim\Core\View\Html\Page;
-use Arikaim\Core\Utils\Number;
-use Arikaim\Core\Utils\DateTime;
 use PDOException;
 
 /**
@@ -32,14 +27,15 @@ class AppContainer
      * Init default services
      *
      * @param boolean $cosole
+     * @param array $config
      * @return Container
      */
-    public static function create(bool $console = false)
+    public static function create(bool $console = false, $config = [])
     {
         $container = new Container();
 
         // Config
-        $container['config'] = function($container) {                            
+        $container['config'] = function() {                            
             $config = new \Arikaim\Core\System\Config('config.php',null,Path::CONFIG_PATH);
             $config->setWriteProtectedVars([
                 'settings/jwtKey',
@@ -62,17 +58,18 @@ class AppContainer
         }; 
 
         // Cache 
-        $container['cache'] = function($container) {                    
-            $routeCacheFile = Path::CACHE_PATH . '/routes.cache.php';  
-            $driver = $container['config']['settings']['cacheDriver'] ?? Cache::VOID_DRIVER;
-            $enabled = $container['config']['settings']['cache'] ?? false;    
-            $saveTime = $container['config']['settings']['cacheSaveTime'] ?? 7;    
-
-            return new Cache(Path::CACHE_PATH,$routeCacheFile,$driver,$enabled,$saveTime);
+        $container['cache'] = function() use($config) {                    
+            return new Cache(
+                Path::CACHE_PATH,
+                Path::CACHE_PATH . '/routes.cache.php',
+                $config['settings']['cacheDriver'] ?? Cache::VOID_DRIVER,
+                $config['settings']['cache'] ?? false,
+                $config['settings']['cacheSaveTime'] ?? 7
+            );
         };
       
         // Storage
-        $container['storage'] = function($container) {
+        $container['storage'] = function() {
             return new \Arikaim\Core\Storage\Storage();
         };
         // Http client  
@@ -81,19 +78,24 @@ class AppContainer
         }; 
         // Package manager factory
         $container['packages'] = function($container) {     
-            return new PackageManagerFactory($container['cache'],$container['storage'],$container['http']);          
+            return new \Arikaim\Core\Packages\PackageManagerFactory(
+                $container['cache'],
+                $container['storage'],
+                $container['http']
+            );          
         };
         // Access
-        $container['access'] = function($container) {
-            $user = Model::Users();  
-            $permissions = Model::PermissionRelations();    
-            $jwtKey = $container['config']['settings']['jwtKey'] ?? 'jwtKey';
-
-            return new \Arikaim\Core\Access\Access($permissions,$user,null,['key' => $jwtKey]);          
+        $container['access'] = function() use($config) {
+            return new \Arikaim\Core\Access\Access(
+                Model::PermissionRelations(),
+                Model::Users(),
+                null,
+                ['key' => $config['settings']['jwtKey'] ?? 'jwtKey']
+            );          
         };
         // Init template view. 
-        $container['view'] = function ($container) {      
-            $cacheStatus = $container['config']['settings']['cache'] ?? false;                                            
+        $container['view'] = function ($container)  use($config) {      
+            $cacheStatus = $config['settings']['cache'] ?? false;                                            
            
             $view = new \Arikaim\Core\View\View(
                 $container['cache'],
@@ -105,28 +107,22 @@ class AppContainer
                 Path::TEMPLATES_PATH,
                 Path::COMPONENTS_PATH,[
                     'cache'      => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
-                    'debug'      => $container['config']['settings']['debug'] ?? false,
-                    'demo_mode'  => $container['config']['settings']['demoMode'] ?? false,
+                    'debug'      => $config['settings']['debug'] ?? false,
+                    'demo_mode'  => $config['settings']['demoMode'] ?? false,
                     'autoescape' => false
                 ],
-                $container['config']['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME,
-                $container['config']['settings']['templateTheme'] ?? null
+                $config['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME,
+                $config['settings']['templateTheme'] ?? null
             );           
 
-            // Add twig extension
-            $twigExtension = new TwigExtension(BASE_PATH,Path::VIEW_PATH);
-            $view->addExtension($twigExtension);
+            // Add twig extension         
+            $view->addExtension(new TwigExtension());
            
-            // Set date and time, number formats   
-            Number::setFormat($container['config']['settings']['numberFormat'] ?? null);                             
-            DateTime::setDateFormat($container['config']['settings']['dateFormat'] ?? null);           
-            DateTime::setTimeFormat($container['config']['settings']['timeFormat'] ?? null);  
-
             return $view;
         };    
         // Init page view.
         $container['page'] = function($container) {                     
-            $libraryPrams = $container->get('options')->get('library.params',[]);
+            $libraryPrams = $container->get('config')->load('ui-library.php',false);
             $defaultLanguage = $container['config']['settings']['defaultLanguage'] ?? 'en';     
                       
             return new Page($container->get('view'),$defaultLanguage,$libraryPrams);
@@ -142,14 +138,11 @@ class AppContainer
         };
       
         // Init Eloquent ORM
-        $container['db'] = function($container) {  
-            try {  
-                $relations = $container->get('config')->load('relations.php',false);
-                $db = new \Arikaim\Core\Db\Db($container['config']['db'],$relations);
-            } catch(PDOException $e) {
-                if (Install::isInstalled() == false) {
-                    // not installed
-                }                
+        $container['db'] = function() use($config) {  
+            try {               
+                $relations = include (Path::CONFIG_PATH . 'relations.php');
+                $db = new \Arikaim\Core\Db\Db($config['db'],$relations);
+            } catch(PDOException $e) {                            
             }      
             return $db;
         };     
@@ -172,11 +165,11 @@ class AppContainer
         };
 
         // Logger
-        $container['logger'] = function($container) {   
+        $container['logger'] = function() use($config) {   
             return new \Arikaim\Core\Logger\Logger(
                 Path::LOGS_PATH . 'errors.log',
-                $container['config']['settings']['logger'] ?? false,
-                $container['config']['settings']['loggerHandler'] ?? 'file'
+                $config['settings']['logger'] ?? false,
+                $config['settings']['loggerHandler'] ?? 'file'
             );           
         };      
 
@@ -207,15 +200,18 @@ class AppContainer
         };
 
         // Events manager 
-        $container['event'] = function($container) {
-            return new EventsManager(Model::Events(),Model::EventSubscribers(),$container['logger'],[
-                'log' => $container['config']['settings']['logEvents'] ?? false 
-            ]);
+        $container['event'] = function($container) use($config) {
+            return new \Arikaim\Core\Events\EventsManager(
+                Model::Events(),Model::EventSubscribers(),
+                $container['logger'],
+                [
+                    'log' => $config['settings']['logEvents'] ?? false 
+                ]
+            );
         };
         // Jobs queue
-        $container['queue'] = function($container) {           
-            $jobs = Model::Jobs();
-            return new \Arikaim\Core\Queue\QueueManager($jobs,$container['logger']);          
+        $container['queue'] = function($container) {                     
+            return new \Arikaim\Core\Queue\QueueManager(Model::Jobs(),$container['logger']);          
         };          
         // Modules manager
         $container['modules'] = function($container) {           
@@ -224,6 +220,10 @@ class AppContainer
         // Service manager
         $container['service'] = function() {           
             return new \Arikaim\Core\Service\ServiceContainer();
+        }; 
+        // Content providers manager
+        $container['content'] = function() {           
+            return new \Arikaim\Core\Content\ContentManager();
         }; 
 
         return $container;

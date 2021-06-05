@@ -126,17 +126,6 @@ class SystemRoutes
                 'handler'    => 'Arikaim\Core\Api\Store:saveOrder',
                 'middleware' => null                
             ],
-            // Api routes
-            [
-                'pattern'    => '/core/api/create/token/',
-                'handler'    => 'Arikaim\Core\Api\Client:createToken',
-                'middleware' => null                
-            ],
-            [
-                'pattern'    => '/core/api/verify/request/',
-                'handler'    => 'Arikaim\Core\Api\Client:verifyRequest',
-                'middleware' => null                
-            ],
             // Ui component
             [
                 'pattern'    => '/core/api/ui/component/{name}[/{params:.*}]',
@@ -436,18 +425,7 @@ class SystemRoutes
                 'pattern'    => '/core/api/language/{uuid}',
                 'handler'    => 'Arikaim\Core\Api\Language:remove',
                 'middleware' => 'session'            
-            ],
-            // Access tokens 
-            [
-                'pattern'    => '/core/api/tokens/delete/{uuid}',
-                'handler'    => 'Arikaim\Core\Api\AccessTokens:delete',
-                'middleware' => 'session'            
-            ],
-            [
-                'pattern'    => '/core/api/tokens/delete/expired/{uuid}',
-                'handler'    => 'Arikaim\Core\Api\AccessTokens:deleteExpired',
-                'middleware' => 'session'            
-            ],
+            ],           
             // Cache
             [
                 'pattern'    => '/core/api/cache/clear',

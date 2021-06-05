@@ -46,16 +46,17 @@ class CronCommand extends ConsoleCommand
     {
         // unlimited execution time
         System::setTimeLimit(0); 
-        // Set time zone
-        DateTime::setTimeZone(Arikaim::options()->get('time.zone'));
-
+       
         $this->showTitle();
 
         $jobs = Arikaim::queue()->getJobsDue();
+        $jobsDue = \count($jobs);
+
+        $this->writeFieldLn('Jobs due ',$jobsDue); 
         $this->writeLn('...');
         $executed = 0;  
 
-        if (empty($jobs) == false) {
+        if ($jobsDue > 0) {
             $executed = $this->runJobs($jobs);          
         }
 
@@ -72,10 +73,16 @@ class CronCommand extends ConsoleCommand
     protected function runJobs(array $jobs): int
     {
         $executed = 0;  
+        
         foreach ($jobs as $item) {
             $job = Arikaim::queue()->createJobFromArray($item);
         
-            $isDue = ($job instanceof RecurringJobInterface || $job instanceof ScheduledJobInterface) ? $job->isDue() : true;            
+            if (($job instanceof RecurringJobInterface) || ($job instanceof ScheduledJobInterface)) {
+                $isDue = $job->isDue();
+            } else {
+                $isDue = true;
+            }
+    
             if ($isDue == false) {             
                 continue;
             }
