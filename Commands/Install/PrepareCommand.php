@@ -41,6 +41,7 @@ class PrepareCommand extends ConsoleCommand
     protected function executeCommand($input, $output)
     {
         $this->showTitle();
+             
         $install = new Install();
 
         //Requirements             

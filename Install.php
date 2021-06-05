@@ -369,12 +369,10 @@ class Install
      * @param Closure|null $onProgress
      * @param Closure|null $onError
      * @param bool $stopOnError
-     * @return string|false
+     * @return bool
      */
-    private function createDbTables($onProgress = null, $onError = null, $stopOnError = true)
-    {                        
-        Arikaim::get('db')->reboot();
-        
+    public function createDbTables($onProgress = null, $onError = null, $stopOnError = true): bool
+    {                         
         $classes = $this->getSystemSchemaClasses();
         $result = true;
         try {
@@ -429,7 +427,7 @@ class Install
      * @return boolean
      */
     public static function isInstalled(): bool 
-    {
+    {        
         $errors = 0;            
         try {
             Arikaim::get('db')->initSchemaConnection(); 
