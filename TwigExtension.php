@@ -25,7 +25,6 @@ use Arikaim\Core\Http\Url;
 use Arikaim\Core\Http\Session;
 use Arikaim\Core\App\ArikaimStore;
 use Arikaim\Core\Routes\Route;
-use Arikaim\Core\Db\Schema;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
 use Arikaim\Core\View\Template\Tags\ComponentTagParser;
@@ -532,19 +531,13 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param boolean $checkTable
      * @return Model|false
      */
-    public function createModel($modelClass, $extension = null, $showError = false, $checkTable = false)
+    public function createModel($modelClass, $extension = null, $showError = false)
     {
         if (\in_array($modelClass,$this->protectedModels) == true) {
             return (Arikaim::get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension) : false;           
         }
-        $model = Model::create($modelClass,$extension,null,$showError);
 
-        if (\is_object($model) == true && $checkTable == true) {
-            // check if table exist
-            return (Schema::hasTable($model) == false) ? false : $model;
-        }
-
-        return $model;
+        return Model::create($modelClass,$extension,null,$showError);
     }
 
     /**

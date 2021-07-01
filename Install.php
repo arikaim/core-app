@@ -112,12 +112,11 @@ class Install
     /**
      * Install Arikaim
      *
-     * @param Closeure|null $onProgress
-     * @param Closeure|null $onProgressError
-     * @param Closeure|null $onProgressCompleted
+     * @param Closure|null $onProgress
+     * @param Closure|null $onProgressError    
      * @return boolean
      */
-    public function install($onProgress = null, $onProgressError = null): bool 
+    public function install(?Closure $onProgress = null, ?Closure $onProgressError = null): bool 
     {         
         System::setTimeLimit(0);
 
@@ -371,7 +370,7 @@ class Install
      * @param bool $stopOnError
      * @return bool
      */
-    public function createDbTables($onProgress = null, $onError = null, $stopOnError = true): bool
+    public function createDbTables(?Closure $onProgress = null, ?Closure $onError = null, bool $stopOnError = true): bool
     {                         
         $classes = $this->getSystemSchemaClasses();
         $result = true;
@@ -533,8 +532,8 @@ class Install
     private function getSystemSchemaClasses()
     {
         return [
-            'OptionsSchema',
             'RoutesSchema',
+            'OptionsSchema',          
             'UsersSchema',
             'PermissionsSchema',
             'PermissionRelationsSchema',
