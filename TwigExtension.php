@@ -432,6 +432,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             // access denied 
             return false;
         }
+        Arikaim::get('config')->reloadConfig();
 
         return Arikaim::get('config')->getByPath($key,$default);         
     }

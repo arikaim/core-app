@@ -114,12 +114,16 @@ class Install
      *
      * @param Closure|null $onProgress
      * @param Closure|null $onProgressError    
+     * @param array|null $config
      * @return boolean
      */
-    public function install(?Closure $onProgress = null, ?Closure $onProgressError = null): bool 
+    public function install(?Closure $onProgress = null, ?Closure $onProgressError = null, ?array $config = null): bool 
     {         
         System::setTimeLimit(0);
 
+        if (\is_array($config) == true) {
+            Arikaim::config()->set('db',$config);
+        } 
         // create database if not exists  
         $databaseName = Arikaim::config()->getByPath('db/database');
       
