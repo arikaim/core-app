@@ -21,6 +21,12 @@ class SystemRoutes
      */
     public static $installRoutes = [
         'POST' => [
+            // Prepare install
+            [
+                'pattern'    => '/core/api/install/prepare',
+                'handler'    => 'Arikaim\Core\Api\Install:prepare',
+                'middleware' => null         
+            ],
             // Install
             [
                 'pattern'    => '/core/api/install/',
@@ -176,6 +182,12 @@ class SystemRoutes
                 'pattern'    => '/core/api/packages/config',
                 'handler'    => 'Arikaim\Core\Api\Packages:saveConfig',
                 'middleware' => 'session'            
+            ],
+            // Prepare install
+            [
+                'pattern'    => '/core/api/install/prepare',
+                'handler'    => 'Arikaim\Core\Api\Install:prepare',
+                'middleware' => null         
             ],
             // Install
             [

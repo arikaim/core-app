@@ -108,6 +108,23 @@ class Install
             $closure($message);
         }
     }
+    
+    /**
+     * Create db if not exist
+     *
+     * @param string $databaseName
+     * @return boolean
+     */
+    public function createDb(string $databaseName): bool
+    {
+        if (Arikaim::db()->has($databaseName) == false) {
+            $charset = Arikaim::config()->getByPath('db/charset'); 
+            $collation = Arikaim::config()->getByPath('db/collation');
+            return Arikaim::db()->createDb($databaseName,$charset,$collation);                    
+        }
+        
+        return true;
+    }
 
     /**
      * Install Arikaim
@@ -124,30 +141,9 @@ class Install
         if (\is_array($config) == true) {
             Arikaim::config()->set('db',$config);
         } 
-        // create database if not exists  
-        $databaseName = Arikaim::config()->getByPath('db/database');
-      
-        if (Arikaim::db()->has($databaseName) == false) {
-            $charset = Arikaim::config()->getByPath('db/charset'); 
-            $collation = Arikaim::config()->getByPath('db/collation');
-            $result = Arikaim::db()->createDb($databaseName,$charset,$collation); 
-            if ($result == false) {
-                $this->callback($onProgressError,'Error create database ' . $databaseName);              
-                return false;                
-            }         
-            $this->callback($onProgress,'Database created.');    
-            // reboot db    
-            Arikaim::db()->reboot(Arikaim::config()->get('db')); 
-        }          
+        // reboot connection    
+        Arikaim::db()->reboot(Arikaim::config()->get('db')); 
 
-        // check db
-        if (Arikaim::db()->has($databaseName) == false) {
-            $error = Arikaim::errors()->getError('DB_DATABASE_ERROR');          
-            $this->callback($onProgressError,$error); 
-            return false;
-        }
-        $this->callback($onProgress,'Database status ok.');
-       
         // Create Arikaim DB tables
         $result = $this->createDbTables(function($class) use ($onProgress) {
             $this->callback($onProgress,'Db table model created ' . $class);

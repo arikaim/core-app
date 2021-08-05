@@ -30,8 +30,8 @@ class InstallPage extends Controller
         $this->get('cache')->clear();   
 
         $disableInstallPage = $this->get('config')->getByPath('settings/disableInstallPage'); 
-        if ($disableInstallPage == true) {           
-            return $this->pageNotFound($response,$data->toArray()); 
+        if ($disableInstallPage == true) {                    
+            return $this->pageNotFound($response,$data->toArray(),'system'); 
         }
 
         if (Install::isInstalled() == false) { 
@@ -40,7 +40,7 @@ class InstallPage extends Controller
             
             return $this->pageLoad($request,$response,['page_name' => 'system:install']);                   
         } 
-        $data['message'] = $this->get('errors')->getError('INSTALLED_ERROR');
+        $data['error'] = $this->get('errors')->getError('INSTALLED_ERROR');
     
         return $this->pageSystemError($response,$data->toArray(),'system'); 
     }
