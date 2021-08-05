@@ -117,6 +117,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('sessionInfo',['Arikaim\\Core\\Http\\Session','getParams']),                   
             // paginator
             new TwigFunction('paginate',['Arikaim\\Core\\Paginator\\SessionPaginator','create']),
+            new TwigFunction('paginatorUrl',[$this,'getPaginatorUrl']),
             new TwigFunction('clearPaginator',['Arikaim\\Core\\Paginator\\SessionPaginator','clearPaginator']),            
             new TwigFunction('getPaginator',['Arikaim\\Core\\Paginator\\SessionPaginator','getPaginator']),
             new TwigFunction('getRowsPerPage',['Arikaim\\Core\\Paginator\\SessionPaginator','getRowsPerPage']),
@@ -172,7 +173,23 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         return $functions;
     }
 
-     /**
+    /**
+     * Get paginator url
+     *
+     * @param string $pageUrl
+     * @param integer $page
+     * @param boolean $full
+     * @param boolean $withLanguagePath
+     * @return string
+     */
+    public function getPaginatorUrl($pageUrl, $page, $full = true, $withLanguagePath = false)
+    {
+        $path = (empty($pageUrl) == true) ? $page : $pageUrl . '/' . $page;
+        
+        return Page::getUrl($path,$full,$withLanguagePath);
+    }
+
+    /**
      * Return true if extension exists
      *
      * @param string $extension
