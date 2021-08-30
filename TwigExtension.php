@@ -140,7 +140,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),                          
             new TwigFunction('create',[$this,'create']),  
             new TwigFunction('hasExtension',[$this,'hasExtension']),
-            
             // session vars
             new TwigFunction('getSessionVar',[$this,'getSessionVar']),
             new TwigFunction('setSessionVar',[$this,'setSessionVar']),
@@ -241,7 +240,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string $name
      * @param array|null $params
      * @param string|null $type
-     * @return string
+     * @return string|null
      */
     public function loadComponent(string $name, $params = [], ?string $type = null)
     {              
@@ -336,8 +335,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @return array
      */
     public function getFilters() 
-    {      
-       $filters = [
+    {       
+        return [
             // Html
             new TwigFilter('attr',['Arikaim\\Core\\View\\Template\\Filters','attr'],['is_safe' => ['html']]),           
             new TwigFilter('getAttr',['Arikaim\\Core\\Utils\\Html','getAttributes'],['is_safe' => ['html']]),
@@ -376,8 +375,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('baseName',['Arikaim\\Core\\Utils\\File','baseName']),
             new TwigFilter('relativePath',['Arikaim\\Core\\Utils\\Path','getRelativePath'])
         ];
-       
-        return $filters;
     }
 
     /**
@@ -414,7 +411,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string $name
      * @return mixed
      */
-    public function getService($name)
+    public function getService(string $name)
     {
         if (\in_array($name,$this->protectedServices) == true) {
             return (Arikaim::get('access')->hasControlPanelAccess() == true) ? Arikaim::get($name) : false;           
@@ -437,10 +434,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @param string $path
      * @param boolean $recursive
-     * @param string $fileSystemName
+     * @param string|null $fileSystemName
      * @return array|false
      */
-    public function getDirectoryFiles(string $path, bool $recursive = false, string $fileSystemName = 'storage')
+    public function getDirectoryFiles(string $path, bool $recursive = false, ?string $fileSystemName = null)
     {
         // Control Panel only
         if (Arikaim::get('access')->isLogged() == false) {
