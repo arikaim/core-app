@@ -160,7 +160,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('getTimeZonesList',['Arikaim\\Core\\Utils\\DateTime','getTimeZonesList']),
             new TwigFunction('timeInterval',['Arikaim\\Core\\Utils\\TimeInterval','getInterval']),          
             new TwigFunction('currentYear',['Arikaim\\Core\\Utils\\DateTime','getCurrentYear']),
-            new TwigFunction('today',['Arikaim\\Core\\Utils\\DateTime','getTimestamp']),
+            new TwigFunction('today',['Arikaim\\Core\\Utils\\DateTime','getCurrentTimestamp']),
             // unique Id
             new TwigFunction('createUuid',['Arikaim\\Core\\Utils\\Uuid','create']),
             new TwigFunction('createToken',['Arikaim\\Core\\Utils\\Utils','createToken']),
