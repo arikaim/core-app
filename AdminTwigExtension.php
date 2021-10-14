@@ -16,7 +16,6 @@ use Twig\Extension\GlobalsInterface;
 
 use Arikaim\Core\Arikaim;
 use Arikaim\Core\View\Html\Page;
-use Arikaim\Core\Db\Model;
 use Arikaim\Core\System\System;
 use Arikaim\Core\App\ArikaimStore;
 use Arikaim\Core\Utils\File;
