@@ -156,10 +156,14 @@ class AppContainer
                 );           
             },      
             // Init email view.
-            'email' => function($container) {                     
-                $defaultLanguage = $container['config']['settings']['defaultLanguage'] ?? 'en';     
-                        
-                return new \Arikaim\Core\View\Html\EmailView($container->get('view'),$defaultLanguage);
+            'email' => function($container) use($config) { 
+                $emailCompiler = $config['settings']['emailCompiler'] ?? null;
+             
+                return new \Arikaim\Core\View\Html\EmailView(
+                    $container->get('view'),
+                    $container['config']['settings']['defaultLanguage'] ?? 'en',
+                    $emailCompiler
+                );
             },
             // Mailer
             'mailer' => function($container) {
@@ -167,8 +171,7 @@ class AppContainer
                     'from_email' => $container['options']->getString('mailer.from.email',''),
                     'from_name'  => $container['options']->getString('mailer.from.name',''),
                     'log'        => $container['options']->get('mailer.log',false),
-                    'log_error'  => $container['options']->get('mailer.log.error',false),                
-                    'compillers' => $container['options']->get('mailer.email.compillers',[])
+                    'log_error'  => $container['options']->get('mailer.log.error',false)               
                 ];
     
                 $driverName = $container['options']->getString('mailer.driver',null);

@@ -108,7 +108,7 @@ class SystemRoutes
             ],          
             // Mailer 
             [
-                'pattern'    => '/core/api/mailer/test/email',
+                'pattern'    => '/core/api/mailer/test/email[/{component}]',
                 'handler'    => 'Arikaim\Core\Api\Mailer:sendTestEmail',
                 'middleware' => 'session'            
             ],
