@@ -13,7 +13,6 @@ use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\System\System;
 use Arikaim\Core\Arikaim;
-use Arikaim\Core\Utils\DateTime;
 use Arikaim\Core\Interfaces\Job\JobLogInterface;
 use Arikaim\Core\Interfaces\Job\RecurringJobInterface;
 use Arikaim\Core\Interfaces\Job\ScheduledJobInterface;
@@ -82,7 +81,7 @@ class CronCommand extends ConsoleCommand
             } else {
                 $isDue = true;
             }
-    
+               
             if ($isDue == false) {             
                 continue;
             }
@@ -99,10 +98,7 @@ class CronCommand extends ConsoleCommand
                 );
 
                 if ($job->hasSuccess() == true) {                                         
-                    $executed++;    
-                    if ($job instanceof JobLogInterface) {
-                        Arikaim::logger()->info($job->getLogMessage(),$job->getLogContext());
-                    }
+                    $executed++;                       
                 } else {
                     $this->writeLn(ConsoleHelper::errorMark() . ' Error executing job ' . $name);
                     Arikaim::logger()->error('Failed to execute cron job,',['errors' => $job->getErrors()]);

@@ -62,9 +62,6 @@ class RunJobCommand extends ConsoleCommand
         );
         
         if ($job->hasSuccess() == true) {                                         
-            if ($job instanceof JobLogInterface) {
-                Arikaim::logger()->info($job->getLogMessage(),$job->getLogContext());
-            }
             $this->showCompleted();    
         } else {
             // error
