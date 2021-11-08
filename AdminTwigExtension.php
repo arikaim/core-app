@@ -51,6 +51,7 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('system',[$this,'system']),           
             new TwigFunction('hasModule',[$this,'hasModule']),
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
+            new TwigFunction('hasTable',['Arikaim\\Core\\Db\\Schema','hasTable']),
             new TwigFunction('relationsMap',[$this,'getRelationsMap']),
             new TwigFunction('arikaimStore',[$this,'arikaimStore']),
             new TwigFunction('getConfigOption',[$this,'getConfigOption']),   

@@ -457,7 +457,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function createModel(?string $modelClass, ?string $extension = null, bool $showError = false)
     {
         if (\in_array($modelClass,$this->protectedModels) == true) {
-            return (Arikaim::get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension) : false;           
+            return (Arikaim::get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension,null,$showError) : false;           
         }
 
         return Model::create($modelClass,$extension,null,$showError);
