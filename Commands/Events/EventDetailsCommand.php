@@ -73,7 +73,7 @@ class EventDetailsCommand extends ConsoleCommand
         $this->newLine();
         $this->writeLn('Subscribers',' ','cyan');
 
-        $subscribers = Arikaim::get('event')->getSubscribers(['name' => $name]); 
+        $subscribers = Arikaim::get('event')->getSubscribers($name); 
 
         foreach ($subscribers as $item) {
             $rows = [

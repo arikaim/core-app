@@ -339,7 +339,9 @@ class Install
         Arikaim::options()->createOption('mailer.log',false,true);
         Arikaim::options()->createOption('mailer.log.error',false,true);
         Arikaim::options()->createOption('mailer.from.email','',true);
-        Arikaim::options()->createOption('mailer.from.name','',true);                   
+        Arikaim::options()->createOption('mailer.from.name','',true);      
+        // admin
+        Arikaim::options()->createOption('admin.menu.button','',false);                
     }
 
     /**
