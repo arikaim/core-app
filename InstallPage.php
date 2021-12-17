@@ -26,7 +26,7 @@ class InstallPage extends Controller
      * @return Psr\Http\Message\ResponseInterface
     */
     public function loadInstall($request, $response, $data)
-    {
+    {       
         $this->get('cache')->clear();   
 
         $disableInstallPage = $this->get('config')->getByPath('settings/disableInstallPage'); 
@@ -41,7 +41,7 @@ class InstallPage extends Controller
             return $this->pageLoad($request,$response,['page_name' => 'system:install']);                   
         } 
         $data['error'] = $this->get('errors')->getError('INSTALLED_ERROR');
-    
+
         return $this->pageSystemError($response,$data->toArray(),'system'); 
     }
 }
