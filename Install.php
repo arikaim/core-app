@@ -334,8 +334,7 @@ class Install
     private function initDefaultOptions(): void
     {        
         Arikaim::options()->setStorageAdapter(Model::Options());
-        // mailer
-        Arikaim::options()->createOption('mailer.driver',null,true);      
+        // mailer        
         Arikaim::options()->createOption('mailer.log',false,true);
         Arikaim::options()->createOption('mailer.log.error',false,true);
         Arikaim::options()->createOption('mailer.from.email','',true);

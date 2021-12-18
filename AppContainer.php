@@ -166,21 +166,19 @@ class AppContainer
                 );
             },
             // Mailer
-            'mailer' => function($container) {
-                $mailerOptions = [
-                    'from_email' => $container['options']->getString('mailer.from.email',''),
-                    'from_name'  => $container['options']->getString('mailer.from.name',''),
-                    'log'        => $container['options']->get('mailer.log',false),
-                    'log_error'  => $container['options']->get('mailer.log.error',false)               
-                ];
-    
-                $driverName = $container['options']->getString('mailer.driver',null);
-                $driver = (empty($driverName) == false) ? $container['driver']->create($driverName) : null;
-                if ($driver === false) {
-                    $driver = null;
-                }
-                
-                return new \Arikaim\Core\Mail\Mailer($mailerOptions,$container['email'],$driver,$container['logger']);
+            'mailer' => function($container) use($config) {            
+                $driverName =  $container['config']['settings']['mailerDriver'] ?? null;              
+               
+                return new \Arikaim\Core\Mail\Mailer([
+                        'from_email' => $container['options']->getString('mailer.from.email',''),
+                        'from_name'  => $container['options']->getString('mailer.from.name',''),
+                        'log'        => $container['options']->get('mailer.log',false),
+                        'log_error'  => $container['options']->get('mailer.log.error',false)               
+                    ],
+                    $container['email'],
+                    (empty($driverName) == false) ? $container['driver']->create($driverName) : null,
+                    $container['logger']
+                );
             },    
             // Events manager 
             'event' => function($container) use($config) {
