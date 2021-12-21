@@ -11,6 +11,7 @@ namespace Arikaim\Core\App;
 
 use Arikaim\Core\App\Install;
 use Arikaim\Core\Controllers\Controller;
+use Arikaim\Core\System\System;
 
 /**
  * Page loader controller
@@ -26,7 +27,7 @@ class InstallPage extends Controller
      * @return Psr\Http\Message\ResponseInterface
     */
     public function loadInstall($request, $response, $data)
-    {       
+    {              
         $this->get('cache')->clear();   
 
         $disableInstallPage = $this->get('config')->getByPath('settings/disableInstallPage'); 
@@ -37,8 +38,11 @@ class InstallPage extends Controller
         if (Install::isInstalled() == false) { 
             $install = new Install();
             $install->prepare();
-            
-            return $this->pageLoad($request,$response,['page_name' => 'system:install']);                   
+                       
+            return $this->pageLoad($request,$response,[
+                'page_name' => 'system:install',
+                'system'    => new System()
+            ]);                   
         } 
         $data['error'] = $this->get('errors')->getError('INSTALLED_ERROR');
 
