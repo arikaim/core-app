@@ -55,8 +55,7 @@ class AppContainer
             },
             'cache' => function() use($config) {                    
                 return new \Arikaim\Core\Cache\Cache(
-                    Path::CACHE_PATH,
-                    Path::CACHE_PATH . '/routes.cache.php',
+                    Path::CACHE_PATH,                  
                     $config['settings']['cacheDriver'] ?? \Arikaim\Core\Cache\Cache::VOID_DRIVER,
                     $config['settings']['cache'] ?? false,
                     $config['settings']['cacheSaveTime'] ?? 7

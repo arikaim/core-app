@@ -15,46 +15,6 @@ namespace Arikaim\Core\App;
 class SystemRoutes 
 {
     /**
-     * Install api routes
-     *
-     * @var array
-     */
-    public static $installRoutes = [
-        'POST' => [
-            // Prepare install
-            [
-                'pattern' => '/core/api/install/prepare',
-                'handler' => 'Arikaim\Core\Api\Install:prepare',
-                'auth'    => null         
-            ],
-            // Install
-            [
-                'pattern' => '/core/api/install/',
-                'handler' => 'Arikaim\Core\Api\Install:install',
-                'auth'    => null         
-            ]
-        ],
-        'PUT' => [
-            // Install
-            [
-                'pattern' => '/core/api/install/extensions',
-                'handler' => 'Arikaim\Core\Api\Install:installExtensions',
-                'auth'    => null         
-            ],
-            [
-                'pattern' => '/core/api/install/modules',
-                'handler' => 'Arikaim\Core\Api\Install:installModules',
-                'auth'    => null         
-            ],
-            [
-                'pattern' => '/core/api/install/actions',
-                'handler' => 'Arikaim\Core\Api\Install:postInstallActions',
-                'auth'    => null         
-            ]
-        ]
-    ];
-
-    /**
      * System routes
      *
      * @var array
@@ -125,7 +85,7 @@ class SystemRoutes
                 'auth'    => null            
             ]
         ],
-        'POST' => [
+        'POST' => [                     
             // Arikaim Store
             [
                 'pattern' => '/core/api/store/product',
@@ -196,7 +156,7 @@ class SystemRoutes
                 'auth'    => null         
             ]
         ],
-        'PUT' => [
+        'PUT' => [                                  
             // Arikaim Store remove order
             [
                 'pattern' => '/core/api/store/product/remove',
