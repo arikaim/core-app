@@ -28,17 +28,12 @@ class InstallPage extends Controller
     */
     public function loadInstall($request, $response, $data)
     {              
-        $this->get('cache')->clear();   
-
         $disableInstallPage = $this->get('config')->getByPath('settings/disableInstallPage'); 
         if ($disableInstallPage == true) {                    
             return $this->pageNotFound($response,$data->toArray(),'system'); 
         }
 
-        if (Install::isInstalled() == false) { 
-            $install = new Install();
-            $install->prepare();
-                       
+        if (Install::isInstalled() == false) {               
             return $this->pageLoad($request,$response,[
                 'page_name' => 'system:install',
                 'system'    => new System()
