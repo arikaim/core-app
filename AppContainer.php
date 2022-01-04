@@ -89,14 +89,15 @@ class AppContainer
                 $cacheStatus = $config['settings']['cache'] ?? false;                                            
                
                 $view = new \Arikaim\Core\View\View(
-                    $container['cache'],
-                    [
-                        'access' => $container['access']
-                    ],
+                    $container['cache'],                   
                     Path::VIEW_PATH,
                     Path::EXTENSIONS_PATH, 
                     Path::TEMPLATES_PATH,
-                    Path::COMPONENTS_PATH,[
+                    Path::COMPONENTS_PATH,
+                    [
+                        'access' => $container['access']
+                    ],
+                    [
                         'cache'      => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
                         'debug'      => $config['settings']['debug'] ?? false,
                         'demo_mode'  => $config['settings']['demoMode'] ?? false,
