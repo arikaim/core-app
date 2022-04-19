@@ -369,6 +369,12 @@ class SystemRoutes
             ]
         ],
         'DELETE' => [
+            // Uninstall Driver
+            [
+                'pattern' => '/core/api/driver/uninstall/{name}',
+                'handler' => 'Arikaim\Core\Api\Drivers:uninstall',
+                'auth'    => 'session'            
+            ],
             // Paginator 
             [
                 'pattern' => '/core/api/ui/paginator/{namespace}',
