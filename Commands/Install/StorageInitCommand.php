@@ -43,10 +43,8 @@ class StorageInitCommand extends ConsoleCommand
         $this->showTitle();
              
         $install = new Install();
-
         $result = $install->initStorage();
        
-
         if ($result == true) {
             $this->showCompleted();  
         } else {
