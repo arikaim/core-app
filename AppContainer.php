@@ -31,7 +31,7 @@ class AppContainer
      */
     public static function create(bool $console = false, $config = [])
     {
-        $services = [
+        return new Container([
             'config' => function() {                            
                 $config = new \Arikaim\Core\System\Config('config.php',null,Path::CONFIG_PATH);
                 $config->setWriteProtectedVars([
@@ -206,8 +206,6 @@ class AppContainer
             'content' => function() {           
                 return new \Arikaim\Core\Content\ContentManager();
             }
-        ];
-
-        return new Container($services);       
+        ]);     
     }
 }

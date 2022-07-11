@@ -75,12 +75,10 @@ class CronCommand extends ConsoleCommand
         
         foreach ($jobs as $item) {
             $job = Arikaim::queue()->createJobFromArray($item);
-        
+            $isDue = true;
             if (($job instanceof RecurringJobInterface) || ($job instanceof ScheduledJobInterface)) {
                 $isDue = $job->isDue();
-            } else {
-                $isDue = true;
-            }
+            } 
                
             if ($isDue == false) {             
                 continue;

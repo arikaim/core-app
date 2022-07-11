@@ -14,7 +14,6 @@ use Twig\TwigTest;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\View\Html\Page;
 use Arikaim\Core\System\System;
 use Arikaim\Core\App\ArikaimStore;
@@ -45,7 +44,7 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getFunctions() 
     {
-        $functions = [
+        return [
             new TwigFunction('getSystemRequirements',['Arikaim\\Core\\App\\Install','checkSystemRequirements']),                      
             new TwigFunction('package',[$this,'createPackageManager']),       
             new TwigFunction('system',[$this,'system']),           
@@ -59,9 +58,7 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             // macros
             new TwigFunction('macro',['Arikaim\\Core\\Utils\\Path','getMacroPath']),         
             new TwigFunction('systemMacro',[$this,'getSystemMacroPath'])
-        ];    
-     
-        return $functions;
+        ];          
     }
 
     /**
@@ -104,7 +101,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getRelationsMap(): ?array
     {
-        return Arikaim::get('db')->getRelationsMap();
+        global $container;
+
+        return $container->get('db')->getRelationsMap();
     }
 
     /**
@@ -124,7 +123,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function arikaimStore()
     {
-        return (Arikaim::get('access')->hasControlPanelAccess() == false) ? null : new ArikaimStore();         
+        global $container;
+
+        return ($container->get('access')->hasControlPanelAccess() == false) ? null : new ArikaimStore();         
     }
 
     /**
@@ -136,13 +137,15 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getConfigOption(string $key, $default = null)
     {
-        if (Arikaim::get('config')->hasReadAccess($key) == false) {
+        global $container;
+
+        if ($container->get('config')->hasReadAccess($key) == false) {
             // access denied 
             return false;
         }
-        Arikaim::get('config')->reloadConfig();
+        $container->get('config')->reloadConfig();
 
-        return Arikaim::get('config')->getByPath($key,$default);         
+        return $container->get('config')->getByPath($key,$default);         
     }
 
     /**
@@ -155,7 +158,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function loadJosnConfigFile(string $fileName, ?string $packageName = null, ?string $packageType = null)
     {
-        if (Arikaim::get('access')->hasControlPanelAccess() == false) {
+        global $container;
+
+        if ($container->get('access')->hasControlPanelAccess() == false) {
             return null;
         }
         $fileName = Path::CONFIG_PATH . $fileName;
@@ -181,12 +186,10 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function createPackageManager($packageType)
     {
+        global $container;
+
         // Control Panel only
-        if (Arikaim::get('access')->hasControlPanelAccess() == false) {
-            return false;
-        }
-        
-        return Arikaim::get('packages')->create($packageType);
+        return ($container->get('access')->hasControlPanelAccess() == false) ? false : $container->get('packages')->create($packageType);        
     }
 
     /**
@@ -197,7 +200,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function hasModule(string $name): bool
     {
-        return Arikaim::get('modules')->hasModule($name);              
+        global $container;
+
+        return $container->get('modules')->hasModule($name);              
     }
 
     /**
@@ -207,6 +212,8 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function system()
     { 
-        return (Arikaim::get('access')->hasControlPanelAccess() == true) ? new System() : null;
+        global $container;
+
+        return ($container->get('access')->hasControlPanelAccess() == true) ? new System() : null;
     }
 }
