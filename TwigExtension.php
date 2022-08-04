@@ -17,7 +17,6 @@ use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
 use Arikaim\Core\View\Html\Page;
-use Arikaim\Core\Utils\Factory;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\Http\Url;
 use Arikaim\Core\Http\Session;
@@ -137,7 +136,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('content',['Arikaim\\Core\\Arikaim','content']),     
             new TwigFunction('access',[$this,'getAccess']),   
             new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),                          
-            new TwigFunction('create',[$this,'create']),  
             new TwigFunction('hasExtension',[$this,'hasExtension']),
             // session vars
             new TwigFunction('getSessionVar',[$this,'getSessionVar']),
@@ -205,7 +203,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         $model = Model::Extensions()->where('name','=',$extension)->first();  
 
-        return \is_object($model);          
+        return ($model != null);          
     }
 
     /**
@@ -473,14 +471,14 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * @param string|null $extension
      * @param boolean $showError
      * @param boolean $checkTable
-     * @return Model|false
+     * @return Model|null
      */
-    public function createModel(?string $modelClass, ?string $extension = null, bool $showError = false)
+    public function createModel(?string $modelClass, ?string $extension = null, bool $showError = false): ?object
     {
         global $container;
 
         if (\in_array($modelClass,$this->protectedModels) == true) {
-            return ($container->get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension,null,$showError) : false;           
+            return ($container->get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension,null,$showError) : null;           
         }
 
         return Model::create($modelClass,$extension,null,$showError);
@@ -502,14 +500,14 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array|null
      */
-    public function getCurrentLanguage() 
+    public function getCurrentLanguage(): ?array 
     {
         global $container;
 
         $language = $container->get('page')->getLanguage();
         $model = Model::Language()->where('code','=',$language)->first();
 
-        return (\is_object($model) == true) ? $model->toArray() : null;
+        return ($model == null) ? null : $model->toArray();
     }
 
     /**
@@ -540,20 +538,6 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         return $container->get('options')->searchOptions($searchKey,$compactKeys);       
     }
 
-    /**
-     * Create obj
-     *
-     * @param string $class
-     * @param string $extension
-     * @return object|null
-     */
-    public function create(string $class, ?string $extension = null)
-    {
-        $class = Factory::getExtensionClassName($extension,$class);
-        
-        return Factory::createInstance($class);            
-    }
-    
     /**
      * Fetch url
      *
