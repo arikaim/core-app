@@ -107,7 +107,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
                 'is_safe'           => ['html']
             ]),                    
             // page              
-            new TwigFunction('url',[Page::class,'getUrl']),        
+            new TwigFunction('url',[Page::class,'getUrl']),   
+            new TwigFunction('pageHead',[$this,'pageHead']),       
+            new TwigFunction('addPageHeadCode',[$this,'addPageHeadCode']),       
             new TwigFunction('currentUrl',[$this,'getCurrentUrl']),
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
@@ -239,6 +241,31 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function getCurrentUrl(bool $full = true): string
     {
         return ($full == true) ? DOMAIN . $_SERVER['REQUEST_URI'] : $_SERVER['REQUEST_URI'];             
+    }
+
+    /**
+     *  Get page head 
+     * 
+     *  @return object
+     */
+    public function pageHead(): object
+    {
+        global $container;
+
+        return $container->get('page')->head();
+    }
+
+    /**
+     *  Add page head code
+     *  
+     *  @param string $code
+     *  @return void
+     */
+    public function addPageHeadCode(string $code): void
+    {
+        global $container;
+
+        $container->get('page')->head()->set('code',$container->get('page')->head()->get('code') . $code);
     }
 
     /**
