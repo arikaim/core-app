@@ -33,7 +33,7 @@ class AppContainer
     {
         return new Container([
             'config' => function() {                            
-                $config = new \Arikaim\Core\System\Config('config.php',null,Path::CONFIG_PATH);
+                $config = new \Arikaim\Core\System\Config('config.php',Path::CONFIG_PATH);
                 $config->setWriteProtectedVars([
                     'settings/jwtKey',
                     'settings/defaultLanguage',
@@ -57,7 +57,6 @@ class AppContainer
                 return new \Arikaim\Core\Cache\Cache(
                     Path::CACHE_PATH,                  
                     $config['settings']['cacheDriver'] ?? \Arikaim\Core\Cache\Cache::VOID_DRIVER,
-                    $config['settings']['cache'] ?? false,
                     $config['settings']['cacheSaveTime'] ?? 7
                 );
             },
@@ -112,11 +111,12 @@ class AppContainer
                
                 return $view;
             },
-            'page' => function($container) {                     
-                $libraryPrams = $container->get('config')->load('ui-library.php',false);
-                $defaultLanguage = $container['config']['settings']['defaultLanguage'] ?? 'en';     
-                          
-                return new Page($container->get('view'),$defaultLanguage,$libraryPrams);
+            'page' => function($container) {                                
+                return new Page(
+                    $container->get('view'),
+                    $container['config']['settings']['defaultLanguage'] ?? 'en',
+                    $container->get('config')->load('ui-library.php')
+                );
             }, 
             // Errors  
             'errors' => function() use ($console) {
@@ -141,7 +141,7 @@ class AppContainer
             },
             // Options
             'options' => function($container) {                             
-                return new \Arikaim\Core\Options\Options($container->get('cache'), Model::Options());               
+                return new \Arikaim\Core\Options\Options($container->get('cache'),Model::Options());               
             },            
             // Drivers
             'driver' => function() {   
@@ -157,12 +157,10 @@ class AppContainer
             },      
             // Init email view.
             'email' => function($container) use($config) { 
-                $emailCompiler = $config['settings']['emailCompiler'] ?? null;
-             
                 return new \Arikaim\Core\View\Html\EmailView(
                     $container->get('view'),
                     $container['config']['settings']['defaultLanguage'] ?? 'en',
-                    $emailCompiler
+                    $config['settings']['emailCompiler'] ?? null
                 );
             },
             // Mailer
