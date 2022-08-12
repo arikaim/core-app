@@ -203,9 +203,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function hasExtension(string $extension): bool
     {
-        $model = Model::Extensions()->where('name','=',$extension)->first();  
-
-        return ($model != null);          
+        return (Model::Extensions()->where('name','=',$extension)->first() != null);        
     }
 
     /**
@@ -280,9 +278,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {              
         global $container;
         
-        $component = $container->get('page')->renderHtmlComponent($name,$params ?? [],null,$type);
-        
-        return $component->getHtmlCode(); 
+        return $container
+            ->get('page')
+            ->renderHtmlComponent($name,$params ?? [],null,$type)
+            ->getHtmlCode();
     }
 
     /**
