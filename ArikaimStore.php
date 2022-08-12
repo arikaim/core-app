@@ -50,7 +50,7 @@ class ArikaimStore
     {         
         $this->configFile = Path::CONFIG_PATH . $configfileName;
       
-        $this->config = new Config($configfileName,null,Path::CONFIG_PATH);
+        $this->config = new Config($configfileName,Path::CONFIG_PATH);
         if ($this->config->hasConfigFile($configfileName) == false) {
             $this->clear();
             $this->config->save();
@@ -106,9 +106,7 @@ class ArikaimStore
      */
     public function isLogged(): bool
     {
-        $token = $this->config->getByPath('account/token',null);
-        
-        return (empty($token) == false);
+        return (empty($this->config->getByPath('account/token',null)) == false);
     }
 
     /**
