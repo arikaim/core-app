@@ -55,6 +55,7 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('arikaimStore',[$this,'arikaimStore']),
             new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
             new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),  
+            new TwigFunction('sessionInfo',['Arikaim\\Core\\Http\\Session','getParams']),  
             // macros
             new TwigFunction('macro',['Arikaim\\Core\\Utils\\Path','getMacroPath']),         
             new TwigFunction('systemMacro',[$this,'getSystemMacroPath'])

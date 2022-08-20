@@ -25,6 +25,7 @@ use Arikaim\Core\Utils\Path;
 use Arikaim\Core\View\Template\Tags\ComponentTagParser;
 use Arikaim\Core\View\Template\Tags\MdTagParser;
 use Arikaim\Core\View\Template\Tags\CacheTagParser;
+use Arikaim\Core\View\Template\Tags\ErrorTagParser;
 
 /**
  *  Template engine functions, filters and tests.
@@ -113,8 +114,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('currentUrl',[$this,'getCurrentUrl']),
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
-            new TwigFunction('getLanguage',[$this,'getLanguage']),
-            new TwigFunction('sessionInfo',['Arikaim\\Core\\Http\\Session','getParams']),                   
+            new TwigFunction('getLanguage',[$this,'getLanguage']),                 
             // paginator
             new TwigFunction('paginate',['Arikaim\\Core\\Paginator\\SessionPaginator','create']),
             new TwigFunction('paginatorUrl',[$this,'getPaginatorUrl']),
@@ -439,7 +439,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         return [
             new ComponentTagParser(Self::class),
             new MdTagParser(Self::class),
-            new CacheTagParser(Self::class)
+            new CacheTagParser(Self::class),
+            new ErrorTagParser()
         ];
     }   
 
