@@ -135,6 +135,9 @@ class AppContainer
                 }      
                 return $db;
             },
+            'routes.storage' => function() {            
+                return Model::Routes();
+            },
             // Routes
             'routes' => function($container) {            
                 return new Routes(Model::Routes(),$container['cache']);  
