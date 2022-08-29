@@ -12,9 +12,6 @@ namespace Arikaim\Core\App;
 use Arikaim\Container\Container;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\Utils\Path;
-use Arikaim\Core\App\TwigExtension;
-use Arikaim\Core\Routes\Routes;
-use Arikaim\Core\View\Html\Page;
 use PDOException;
 
 /**
@@ -102,17 +99,17 @@ class AppContainer
                         'demo_mode'  => $config['settings']['demoMode'] ?? false,
                         'autoescape' => false
                     ],
-                    $config['settings']['primaryTemplate'] ?? Page::SYSTEM_TEMPLATE_NAME,
+                    $config['settings']['primaryTemplate'] ?? 'system',
                     $config['settings']['templateTheme'] ?? null
                 );           
     
                 // Add twig extension         
-                $view->addExtension(new TwigExtension());
+                $view->addExtension(new \Arikaim\Core\App\TwigExtension());
                
                 return $view;
             },
             'page' => function($container) {                                
-                return new Page(
+                return new \Arikaim\Core\View\Html\Page(
                     $container->get('view'),
                     $container['config']['settings']['defaultLanguage'] ?? 'en',
                     $container->get('config')->load('ui-library.php')
@@ -135,12 +132,13 @@ class AppContainer
                 }      
                 return $db;
             },
+            // Routes storage 
             'routes.storage' => function() {            
                 return Model::Routes();
             },
             // Routes
             'routes' => function($container) {            
-                return new Routes(Model::Routes(),$container['cache']);  
+                return new \Arikaim\Core\Routes\Routes(Model::Routes(),$container['cache']);  
             },
             // Options
             'options' => function($container) {                             
