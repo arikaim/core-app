@@ -63,7 +63,7 @@ class SystemRoutes
             // Options 
             [
                 'pattern' => '/core/api/options/{key}',
-                'handler' => 'Arikaim\Core\Api\Options:get',
+                'handler' => 'Arikaim\Core\Api\Options:read',
                 'auth'    => 'session'            
             ],          
             // Mailer 
