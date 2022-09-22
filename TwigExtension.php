@@ -198,12 +198,23 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Return true if extension exists
      *
-     * @param string $extension
+     * @param string|array $extension
      * @return boolean
      */
-    public function hasExtension(string $extension): bool
+    public function hasExtension($extension): bool
     {
-        return (Model::Extensions()->where('name','=',$extension)->first() != null);        
+        $model = Model::Extensions();
+
+        if (\is_array($extension) == true) {
+            foreach ($extension as $item) {
+                if ($model->where('name','=',$extension)->first() == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return ($model->where('name','=',$extension)->first() != null);        
     }
 
     /**
