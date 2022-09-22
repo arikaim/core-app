@@ -207,7 +207,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
 
         if (\is_array($extension) == true) {
             foreach ($extension as $item) {
-                if ($model->where('name','=',$extension)->first() == null) {
+                if (empty($item) == true) {
+                    return false;
+                }
+                if ($model->where('name','=',$item)->first() == null) {
                     return false;
                 }
             }
