@@ -40,6 +40,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     protected $protectedModels = [
         'PermissionRelations',
         'Permissions',
+        'Users',
         'Routes',
         'Modules',
         'Events',
