@@ -26,6 +26,7 @@ use Arikaim\Core\View\Template\Tags\ComponentTagParser;
 use Arikaim\Core\View\Template\Tags\MdTagParser;
 use Arikaim\Core\View\Template\Tags\CacheTagParser;
 use Arikaim\Core\View\Template\Tags\ErrorTagParser;
+use Exception;
 
 /**
  *  Template engine functions, filters and tests.
@@ -115,7 +116,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('currentUrl',[$this,'getCurrentUrl']),
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
-            new TwigFunction('getLanguage',[$this,'getLanguage']),                 
+            new TwigFunction('getLanguage',[$this,'getLanguage']),    
+            new TwigFunction('readThemeModules',[$this,'readThemeModules']),             
             // paginator
             new TwigFunction('paginate',['Arikaim\\Core\\Paginator\\SessionPaginator','create']),
             new TwigFunction('paginatorUrl',[$this,'getPaginatorUrl']),
@@ -168,6 +170,30 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('createCollection',['Arikaim\\Core\\Collection\\Collection','create']),
             new TwigFunction('createProperties',['Arikaim\\Core\\Collection\\PropertiesFactory','createFromArray']),
         ];    
+    }
+
+    /**
+     * Read theme modules descriptor files
+     *
+     * @param string $templatePath
+     * @param array  $modules
+     * @return array
+     */
+    public function readThemeModules(string $templatePath, array $modules): array 
+    {        
+        $data = [];
+        foreach ($modules as $componentName) {
+            $componentPath = 'components' . DIRECTORY_SEPARATOR . \str_replace('.',DIRECTORY_SEPARATOR,$componentName);
+            try {
+                $json = \file_get_contents($templatePath . $componentPath . DIRECTORY_SEPARATOR . 'arikaim-theme-module.json');
+                $data[] = \json_decode($json,true);
+
+            } catch (Exception $e) {  
+                // not valid or missing theme module descriptor file       
+            }
+        }
+
+        return $data;
     }
 
     /**
