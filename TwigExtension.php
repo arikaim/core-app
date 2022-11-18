@@ -172,15 +172,21 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         ];    
     }
 
-    /**
+   /**
      * Read theme modules descriptor files
      *
      * @param string $templatePath
-     * @param array  $modules
+     * @param array|null  $modules
      * @return array
      */
-    public function readThemeModules(string $templatePath, array $modules): array 
+    public function readThemeModules(string $templatePath, ?array $modules = null): array 
     {        
+        if ($modules == null) {
+            $json = \file_get_contents($templatePath . 'arikaim-package.json');
+            $templateOptions = \json_decode($json,true);
+            $modules = $templateOptions['modules'] ?? [];         
+        }
+
         $data = [];
         foreach ($modules as $componentName) {
             $componentPath = 'components' . DIRECTORY_SEPARATOR . \str_replace('.',DIRECTORY_SEPARATOR,$componentName);
