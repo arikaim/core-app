@@ -281,11 +281,22 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      * Return url link with current language code
      *
      * @param boolean $full
+     * @param string|null $path
+     * @param string|null $language
      * @return string
     */
-    public function getCurrentUrl(bool $full = true): string
+    public function getCurrentUrl(bool $full = true, ?string $path = null, ?string $language = null): string
     {
-        return ($full == true) ? DOMAIN . $_SERVER['REQUEST_URI'] : $_SERVER['REQUEST_URI'];             
+        global $container;
+
+        $url = ($full == true) ? DOMAIN . $_SERVER['REQUEST_URI'] : $_SERVER['REQUEST_URI'];  
+        if ($path == null) {
+            return $url;
+        }
+        
+        $path = $container->get('view')->getGlobalVar('current_url_path','') . $path;
+
+        return Page::getUrl($path,!$full,$language);
     }
 
     /**
