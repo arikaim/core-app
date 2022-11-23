@@ -278,14 +278,13 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
-     * Return url link with current language code
+     * Return current url
      *
      * @param boolean $full
      * @param string|null $path
-     * @param string|null $language
      * @return string
     */
-    public function getCurrentUrl(bool $full = true, ?string $path = null, ?string $language = null): string
+    public function getCurrentUrl(bool $full = true, ?string $path = null): string
     {
         global $container;
 
@@ -294,9 +293,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             return $url;
         }
         
-        $path = $container->get('view')->getGlobalVar('current_url_path','') . $path;
+        $pagePath = $container->get('view')->getGlobalVar('current_url_path','');
 
-        return Page::getUrl($path,!$full,$language);
+        return \rtrim($pagePath,'/') . $path;       
     }
 
     /**
