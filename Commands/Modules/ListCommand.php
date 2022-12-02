@@ -9,13 +9,11 @@
  */
 namespace Arikaim\Core\App\Commands\Modules;
 
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Modules list command
@@ -41,12 +39,13 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+
         $this->showTitle();
-        
         $this->table()->setHeaders(['Name','Version','Type','Status']);
         $this->table()->setStyle('compact');
 
-        $manager = Arikaim::packages()->create('module');
+        $manager = $container->get('packages')->create('module');
         $items = $manager->getPackages();
 
         foreach ($items as $name) {

@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Save env vars command class
@@ -40,6 +39,8 @@ class SaveEnvCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
         $this->style->newLine();
      
@@ -58,9 +59,9 @@ class SaveEnvCommand extends ConsoleCommand
         $question = new Question("\t Enter base path: ",null);        
         $basePath = $helper->ask($input, $output, $question);
         
-        Arikaim::get('config')->setValue('environment/host',\trim($host));
-        Arikaim::get('config')->setValue('environment/basePath',\trim($basePath));         
-        Arikaim::get('config')->save();
+        $container->get('config')->setValue('environment/host',\trim($host));
+        $container->get('config')->setValue('environment/basePath',\trim($basePath));         
+        $container->get('config')->save();
 
         $this->style->newLine();
         $this->showCompleted();  

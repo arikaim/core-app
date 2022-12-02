@@ -11,7 +11,6 @@ namespace Arikaim\Core\App\Commands\Queue;
 
 use Arikaim\Core\Console\ConfigProperties;
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\Utils\DateTime;
 use Arikaim\Core\Collection\Arrays;
 use Arikaim\Core\Interfaces\ConfigPropertiesInterface;
@@ -41,23 +40,24 @@ class JobDetailsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     { 
-        $this->showTitle();
+        global $container;
 
+        $this->showTitle();
         $name = $input->getArgument('name');
         if (empty($name) == true) {
             $this->showError('Job name required!');
             return;
         }
-        if (Arikaim::queue()->has($name) == false) {
+        if ($container->get('queue')->has($name) == false) {
             $this->showError('Not valid job name!');
             return;
         } 
 
         $this->writeFieldLn('Name',$name);
 
-        $job = Arikaim::queue()->create($name);
+        $job = $container->get('queue')->create($name);
       
-        $this->table()->setHeaders(['', '']);
+        $this->table()->setHeaders(['','']);
         $this->table()->setStyle('compact');         
         $jobDetails = $job->toArray();
         foreach($jobDetails as $key => $value) {

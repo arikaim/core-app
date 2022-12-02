@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
-use Arikaim\Core\Arikaim;
 
 /**
  * Extension info command
@@ -41,6 +40,8 @@ class InfoCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+
         $this->showTitle();
      
         $this->table()->setHeaders(['', '']);
@@ -54,7 +55,7 @@ class InfoCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
 
-        $manager = Arikaim::packages()->create('extension');
+        $manager = $container->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');

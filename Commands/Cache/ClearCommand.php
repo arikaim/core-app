@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands\Cache;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Clear cache command
@@ -37,9 +36,11 @@ class ClearCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
     
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
 
         $this->showCompleted();
     }

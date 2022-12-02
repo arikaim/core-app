@@ -17,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\App\Install;
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\App\PostInstallActions;
 
 /**
@@ -44,6 +43,8 @@ class InstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
         $install = new Install();
 
@@ -107,12 +108,12 @@ class InstallCommand extends ConsoleCommand
 
         if ($start == 1) {           
             // save config file               
-            Arikaim::get('config')->setValue('db/username',$databaseUserName);
-            Arikaim::get('config')->setValue('db/password',$databasePassword);
-            Arikaim::get('config')->setValue('db/database',$databaseName);         
-            Arikaim::get('config')->save();
+            $container->get('config')->setValue('db/username',$databaseUserName);
+            $container->get('config')->setValue('db/password',$databasePassword);
+            $container->get('config')->setValue('db/database',$databaseName);         
+            $container->get('config')->save();
               
-            $result = Arikaim::get('db')->testConnection(Arikaim::get('config')->get('db'));
+            $result = $container->get('db')->testConnection($container->get('config')->get('db'));
             if ($result == false) {
                 $this->showError("Can't connect to db!");
                 return;

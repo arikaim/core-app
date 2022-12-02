@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Uninstall extension command
@@ -40,8 +39,9 @@ class UnInstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        $this->showTitle();
+        global $container;
 
+        $this->showTitle();
         $name = $input->getArgument('name');
         if (empty($name) == true) {
             $this->showError('Extension name required!');
@@ -49,7 +49,7 @@ class UnInstallCommand extends ConsoleCommand
         }
         $this->writeFieldLn('Name',$name);
 
-        $manager = Arikaim::packages()->create('extension');
+        $manager = $container->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');
@@ -58,7 +58,7 @@ class UnInstallCommand extends ConsoleCommand
 
         $result = $package->unInstall();
         
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
         
         if ($result == false) {
             $this->showError("Can't uninstall extension!");

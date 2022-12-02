@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Clear env vars command class
@@ -39,10 +38,12 @@ class ClearEnvCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
        
-        Arikaim::get('config')->setValue('environment',[]); 
-        Arikaim::get('config')->save();
+        $container->get('config')->setValue('environment',[]); 
+        $container->get('config')->save();
 
         $this->showCompleted();  
     }

@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\Utils\DateTime;
 
 /**
@@ -40,14 +39,15 @@ class JobsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     { 
+        global $container;
+
         $this->showTitle();  
         $this->showTitle('Recurring Jobs');
-        
         $this->table()->setHeaders(['','Next Run Time','Handler']);
         $this->table()->setStyle('compact');
 
         // Recurring jobs
-        $items = Arikaim::queue()->getRecuringJobs();
+        $items = $container->get('queue')->getRecuringJobs();
         foreach ($items as $item) {                  
             $row = ['',DateTime::dateTimeFormat($item['due_date']),$item['handler_class']];          
             $this->table()->addRow($row);
@@ -58,7 +58,7 @@ class JobsCommand extends ConsoleCommand
         $this->showTitle('Scheduled Jobs');
         $this->table()->setHeaders(['','Scheduled Time','Handler']);
 
-        $items = Arikaim::queue()->getJobs(['schedule_time' => '*']);
+        $items = $container->get('queue')->getJobs(['schedule_time' => '*']);
         $rows = [];
         foreach ($items as $item) {                  
             $row = ['',DateTime::dateTimeFormat($item['schedule_time']),$item['handler_class']];

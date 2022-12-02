@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App;
 
 use Arikaim\Core\Interfaces\Access\AccessInterface;
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\Db\Schema;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\System\System;
@@ -31,9 +30,11 @@ class Install
      */
     public static function setConfigFilesWritable(): bool
     {
+        global $container;
+
         $result = true;
         // config file
-        $configFile = Arikaim::config()->getConfigFile();
+        $configFile = $container->get('config')->getConfigFile();
         $result = (File::setWritable($configFile) == false) ? false : $result;
         // relatins file 
         $configFile = PAth::CONFIG_PATH . 'relations.php';
@@ -117,10 +118,12 @@ class Install
      */
     public function createDb(string $databaseName): bool
     {
-        if (Arikaim::db()->has($databaseName) == false) {
-            $charset = Arikaim::config()->getByPath('db/charset'); 
-            $collation = Arikaim::config()->getByPath('db/collation');
-            return Arikaim::db()->createDb($databaseName,$charset,$collation);                    
+        global $container;
+
+        if ($container->get('db')->has($databaseName) == false) {
+            $charset = $container->get('config')->getByPath('db/charset'); 
+            $collation = $container->get('config')->getByPath('db/collation');
+            return $container->get('db')->createDb($databaseName,$charset,$collation);                    
         }
         
         return true;
@@ -136,13 +139,14 @@ class Install
      */
     public function install(?Closure $onProgress = null, ?Closure $onProgressError = null, ?array $config = null): bool 
     {         
+        global $container;
         System::setTimeLimit(0);
 
         if (\is_array($config) == true) {
-            Arikaim::config()->set('db',$config);
+            $container->get('config')->set('db',$config);
         } 
         // reboot connection    
-        Arikaim::db()->reboot(Arikaim::config()->get('db')); 
+        $container->get('db')->reboot($container->get('config')->get('db')); 
 
         // Create Arikaim DB tables
         $result = $this->createDbTables(function($class) use ($onProgress) {
@@ -158,14 +162,14 @@ class Install
         $this->callback($onProgress,'System db tables created.'); 
 
         // Add control panel permisison item       
-        $result = Arikaim::access()->addPermission(
+        $result = $container->get('access')->addPermission(
             AccessInterface::CONTROL_PANEL,
             AccessInterface::CONTROL_PANEL,
             'Arikaim control panel access.'
         );
         if ($result == false) {    
             if (Model::Permissions()->has(AccessInterface::CONTROL_PANEL) == false) {
-                $error = Arikaim::errors()->getError('REGISTER_PERMISSION_ERROR',['name' => 'ContorlPanel']);
+                $error = $container->get('errors')->getError('REGISTER_PERMISSION_ERROR',['name' => 'ContorlPanel']);
                 $this->callback($onProgressError,$error);
                 return false;
             }           
@@ -211,11 +215,12 @@ class Install
      */
     public function installModules($onProgress = null, $onProgressError = null)
     {      
+        global $container;
         System::setTimeLimit(0);
 
         try {
             // Install modules
-            $modulesManager = Arikaim::packages()->create('module');
+            $modulesManager = $container->get('packages')->create('module');
             $result = $modulesManager->installAllPackages($onProgress,$onProgressError);
         } catch (Exception $e) {
             return false;
@@ -233,11 +238,12 @@ class Install
      */
     public function installExtensions($onProgress = null, $onProgressError = null)
     {      
+        global $container;
         System::setTimeLimit(0);
         
         try {
             // Install extensions      
-            $extensionManager = Arikaim::packages()->create('extension');
+            $extensionManager = $container->get('packages')->create('extension');
             $result = $extensionManager->installAllPackages($onProgress,$onProgressError);
         } catch (Exception $e) {
             return false;
@@ -253,12 +259,13 @@ class Install
      */
     public function initStorage(): bool
     {   
-        if (Arikaim::storage()->has('bin') == false) {          
-            Arikaim::storage()->createDir('bin');
+        global $container;
+        if ($container->get('storage')->has('bin') == false) {          
+            $container->get('storage')->createDir('bin');
         } 
 
-        if (Arikaim::storage()->has('public') == false) {          
-            Arikaim::storage()->createDir('public');
+        if ($container->get('storage')->has('public') == false) {          
+            $container->get('storage')->createDir('public');
         } 
 
         if (File::exists(Path::STORAGE_TEMP_PATH) == false) {
@@ -279,7 +286,7 @@ class Install
 
         // delete symlink
         $linkPath = ROOT_PATH . BASE_PATH . DIRECTORY_SEPARATOR . 'public';
-        $linkTarget = Arikaim::storage()->getFullPath('public') . DIRECTORY_SEPARATOR;
+        $linkTarget = $container->get('storage')->getFullPath('public') . DIRECTORY_SEPARATOR;
       
         if (@\is_link($linkPath) == false) {
             // create symlink 
@@ -296,9 +303,11 @@ class Install
      */
     private function registerCoreEvents(): void
     {
+        global $container;
+
         // Routes
-        Arikaim::event()->registerEvent('core.route.disable','After disable route.');
-        Arikaim::event()->registerEvent('core.route.enable','After disable route.');
+        $container->get('event')->registerEvent('core.route.disable','After disable route.');
+        $container->get('event')->registerEvent('core.route.enable','After disable route.');
     } 
 
     /**
@@ -308,11 +317,12 @@ class Install
      */
     private function createDefaultAdminUser(): bool
     {
+        global $container;
+
         $user = Model::Users()->getControlPanelUser();
         if ($user == false) {
             $user = Model::Users()->createUser('admin','admin');  
             if (empty($user->id) == true) {
-                $error = Arikaim::errors()->getError('CONTROL_PANEL_USER_ERROR','Error create control panel user.');
                 return false;
             }    
         }
@@ -333,14 +343,16 @@ class Install
      */
     private function initDefaultOptions(): void
     {        
-        Arikaim::options()->setStorageAdapter(Model::Options());
+        global $container;
+
+        $container->get('options')->setStorageAdapter(Model::Options());
         // mailer        
-        Arikaim::options()->createOption('mailer.log',false,true);
-        Arikaim::options()->createOption('mailer.log.error',false,true);
-        Arikaim::options()->createOption('mailer.from.email','',true);
-        Arikaim::options()->createOption('mailer.from.name','',true);      
+        $container->get('options')->createOption('mailer.log',false,true);
+        $container->get('options')->createOption('mailer.log.error',false,true);
+        $container->get('options')->createOption('mailer.from.email','',true);
+        $container->get('options')->createOption('mailer.from.name','',true);      
         // admin
-        Arikaim::options()->createOption('admin.menu.button','',false);                
+        $container->get('options')->createOption('admin.menu.button','',false);                
     }
 
     /**
@@ -350,8 +362,10 @@ class Install
      */
     public function installDrivers(): bool
     {
+        global $container;
+
         // cache
-        return Arikaim::driver()->install(
+        return $container->get('driver')->install(
             'filesystem',
             'Doctrine\\Common\\Cache\\FilesystemCache',
             'cache',
@@ -405,12 +419,14 @@ class Install
      */
     public function systemTablesRowFormat(): bool
     {
+        global $container;
+
         $classes = $this->getSystemSchemaClasses();
        
         foreach ($classes as $class) { 
             $tableName = Schema::getTable($class);
             if ($tableName !== true) {
-                $format = Arikaim::db()->getRowFormat($tableName);
+                $format = $container->get('db')->getRowFormat($tableName);
                 if (\strtolower($format) != 'dynamic') {
                     Schema::setRowFormat($tableName);
                 }            
@@ -427,12 +443,14 @@ class Install
      */
     public static function isInstalled(): bool 
     {        
+        global $container;
+
         $errors = 0;            
         try {
-            Arikaim::get('db')->initSchemaConnection(); 
+            $container->get('db')->initSchemaConnection(); 
             
             // check db
-            $errors += Arikaim::db()->has(Arikaim::config()->getByPath('db/database')) ? 0 : 1;
+            $errors += $container->get('db')->has($container->get('config')->getByPath('db/database')) ? 0 : 1;
             if ($errors > 0) {
                 return false;
             }
@@ -463,6 +481,8 @@ class Install
      */
     public static function checkSystemRequirements(): array
     {
+        global $container;
+        
         $info['items'] = [];
         $info['errors']['messages'] = '';
         $errors = [];
@@ -474,7 +494,7 @@ class Install
         if (\version_compare($phpVersion,'7.2','>=') == true) {               
             $item['status'] = 1; // ok                    
         } else {
-           $errors[] = Arikaim::errors()->getError('PHP_VERSION_ERROR');
+           $errors[] = $container->get('errors')->getError('PHP_VERSION_ERROR');
         }
         $info['items'][] = $item;
 
@@ -484,14 +504,14 @@ class Install
         $info['items'][] = $item;
 
         // PDO driver
-        $pdoDriver = Arikaim::config()->getByPath('db/driver');
+        $pdoDriver = $container->get('config')->getByPath('db/driver');
        
         $item['message'] = $pdoDriver . 'PDO driver';
         $item['status'] = 0; // error
         if (System::hasPdoDriver($pdoDriver) == true) {
             $item['status'] = 1; // ok
         } else {
-           $errors[] = Arikaim::errors()->getError('PDO_ERROR');         
+           $errors[] = $container->get('errors')->getError('PDO_ERROR');         
         }
         $info['items'][] = $item;
 

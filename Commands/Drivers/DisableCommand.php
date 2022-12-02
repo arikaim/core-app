@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands\Drivers;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Disable driver command
@@ -37,25 +36,27 @@ class DisableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+        
         $this->showTitle(); 
         $name = $input->getArgument('name');
         if (empty($name) == true) {
-            $error = Arikaim::errors()->getError('ARGUMENT_ERROR',['name' => 'name']);
+            $error = $container->get('errors')->getError('ARGUMENT_ERROR',['name' => 'name']);
             $this->showError($error);
             return;
         }
         
         $this->writeFieldLn('Name',$name);
       
-        if (Arikaim::driver()->has($name) == false) {
-            $error = Arikaim::errors()->getError('DRIVER_NOT_EXISTS_ERROR',['name' => $name]);
+        if ($container->get('driver')->has($name) == false) {
+            $error = $container->get('errors')->getError('DRIVER_NOT_EXISTS_ERROR',['name' => $name]);
             $this->showError($error);
             return;
         }
        
-        $result = Arikaim::driver()->disable($name);
+        $result = $container->get('driver')->disable($name);
         if ($result == false) {
-            $error = Arikaim::errors()->getError('DRIVER_DISABLE_ERROR');
+            $error = $container->get('errors')->getError('DRIVER_DISABLE_ERROR');
             $this->showError($error);           
             return;
         }

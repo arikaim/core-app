@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Enable install page command class
@@ -38,12 +37,14 @@ class EnableInstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
       
-        Arikaim::get('config')->setBooleanValue('settings/disableInstallPage',false);
+        $container->get('config')->setBooleanValue('settings/disableInstallPage',false);
         // save and reload config file
-        Arikaim::get('config')->save();
-        Arikaim::get('cache')->clear();
+        $container->get('config')->save();
+        $container->get('cache')->clear();
         
         $this->showCompleted();  
     }

@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands\Cache;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Enable cache command
@@ -37,15 +36,17 @@ class EnableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+        
         $this->showTitle();
         
-        Arikaim::config()->setBooleanValue('settings/cache',true);
-        $result = Arikaim::config()->save();
+        $container->get('config')->setBooleanValue('settings/cache',true);
+        $result = $container->get('config')->save();
 
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
         
         if ($result !== true) {
-            $error = Arikaim::errors()->getError('CACHE_ENABLE_ERROR');
+            $error = $container->get('errors')->getError('CACHE_ENABLE_ERROR');
             $this->showError($error);
             return;
         } 

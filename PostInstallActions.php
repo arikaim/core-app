@@ -9,7 +9,6 @@
  */
 namespace Arikaim\Core\App;
 
-use Arikaim\Core\Arikaim;
 use Closure;
 
 /**
@@ -26,8 +25,10 @@ class PostInstallActions
      */
     public static function run(?Closure $onProgress = null, ?Closure $onProgressError = null): bool
     {
+        global $container;
+
         // Run post install actions on all extensions      
-        $extensionManager = Arikaim::packages()->create('extension');
+        $extensionManager = $container->get('packages')->create('extension');
         $extensionManager->postInstallAllPackages();
 
         if (Self::hasActions() == false) {
@@ -37,7 +38,7 @@ class PostInstallActions
             return true;
         }
 
-        $actions = Arikaim::config()->loadJsonConfigFile('post-install.json');
+        $actions = $container->get('config')->loadJsonConfigFile('post-install.json');
         $errors = 0;
         foreach ($actions as $action) {           
             $result = Self::runAction($action);
@@ -63,7 +64,9 @@ class PostInstallActions
      */
     public static function hasActions(): bool
     {
-        return (bool)Arikaim::config()->hasConfigFile('post-install.json');
+        global $container;
+
+        return (bool)$container->get('config')->hasConfigFile('post-install.json');
     } 
 
     /**
@@ -115,7 +118,9 @@ class PostInstallActions
      */
     public static function setPrimaryPackage(string $name, string $type = 'extension'): bool
     {
-        $packageManager = Arikaim::packages()->create($type);
+        global $container;
+
+        $packageManager = $container->get('packages')->create($type);
         if ($packageManager->hasPackage($name) == false) {           
             return false;
         }

@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
-use Arikaim\Core\Arikaim;
 
 /**
  * Templates list command
@@ -40,14 +39,15 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+    
         $this->showTitle();
-      
         $this->table()->setHeaders(['Name','Version','Status']);
         $this->table()->setStyle('compact');
         
-        $current = Arikaim::options()->get('current.template',null);
+        $current = $container->get('options')->get('current.template',null);
     
-        $manager = Arikaim::packages()->create('template');
+        $manager = $container->get('packages')->create('template');
         $items = $manager->getPackages();
 
         foreach ($items as $name) {

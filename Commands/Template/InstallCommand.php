@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands\Template;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Install theme command
@@ -37,8 +36,9 @@ class InstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        $this->showTitle();
+        global $container;
 
+        $this->showTitle();
         $name = $input->getArgument('name');
         if (empty($name) == true) {
             $this->showError('Theme name required!');
@@ -47,7 +47,7 @@ class InstallCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
         
-        $manager = Arikaim::packages()->create('template');
+        $manager = $container->get('packages')->create('template');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Theme ' . $name . ' not exists!');
@@ -56,7 +56,7 @@ class InstallCommand extends ConsoleCommand
 
         $result = $package->install();
      
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
         
         if ($result === false) {
             $this->showError("Can't install theme!");

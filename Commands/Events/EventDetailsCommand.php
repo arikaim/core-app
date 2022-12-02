@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
-use Arikaim\Core\Arikaim;
 
 /**
  * Event details command
@@ -41,6 +40,8 @@ class EventDetailsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+
         $this->showTitle();
      
         $name = $input->getArgument('name');
@@ -51,13 +52,13 @@ class EventDetailsCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
 
-        $event = Arikaim::get('event')->getEvents(['name' => $name]);
+        $event = $container->get('event')->getEvents(['name' => $name]);
         if (\is_array($event) == false) {
             $this->showError('Not valid event name.');
             return;
         }
 
-        $this->table()->setHeaders(['', '']);
+        $this->table()->setHeaders(['','']);
         $this->table()->setStyle('compact');
 
         $rows = [
@@ -73,7 +74,7 @@ class EventDetailsCommand extends ConsoleCommand
         $this->newLine();
         $this->writeLn('Subscribers',' ','cyan');
 
-        $subscribers = Arikaim::get('event')->getSubscribers($name); 
+        $subscribers = $container->get('event')->getSubscribers($name); 
 
         foreach ($subscribers as $item) {
             $rows = [

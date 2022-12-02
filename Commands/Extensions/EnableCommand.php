@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Enable extension command
@@ -40,6 +39,8 @@ class EnableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+        
         $this->showTitle();
 
         $name = $input->getArgument('name');
@@ -49,7 +50,7 @@ class EnableCommand extends ConsoleCommand
         }
         $this->writeFieldLn('Name',$name);
 
-        $manager = Arikaim::packages()->create('extension');
+        $manager = $container->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');
@@ -63,7 +64,7 @@ class EnableCommand extends ConsoleCommand
         }
         $result = $manager->enablePackage($name);
 
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
         if ($result == false) {
             $this->showError("Can't enable extension!");
             return;

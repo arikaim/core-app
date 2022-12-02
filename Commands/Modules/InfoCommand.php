@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Module info command
@@ -40,15 +39,16 @@ class InfoCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        $this->showTitle();
+        global $container;
 
+        $this->showTitle();
         $name = $input->getArgument('name');
         if (empty($name) == true) {
             $this->showError('Missing module name option!');
             return;
         }
 
-        $manager = Arikaim::packages()->create('module');
+        $manager = $container->get('packages')->create('module');
         if ($manager->hasPackage($name) == false) {
             $this->showError('Module ' . $name . ' not exists!');
             return;

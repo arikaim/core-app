@@ -9,13 +9,11 @@
  */
 namespace Arikaim\Core\App\Commands\Drivers;
 
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
-use Arikaim\Core\Arikaim;
 
 /**
  * Drivers list command
@@ -41,12 +39,14 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
       
         $this->table()->setHeaders(['Status','Name','Display Name','Category','Version']);
         $this->table()->setStyle('compact');
 
-        $items = Arikaim::driver()->getList();
+        $items = $container->get('driver')->getList();
 
         foreach ($items as $driver) {
             $label = ($driver['status'] == 1) ? ConsoleHelper::getLabelText('enabled','green') : ConsoleHelper::getLabelText('disabled','red');

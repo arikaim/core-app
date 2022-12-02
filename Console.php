@@ -9,7 +9,6 @@
 */
 namespace Arikaim\Core\App;
 
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\App\Install;
 
 /**
@@ -24,7 +23,9 @@ class Console
      */
     public static function getCoreCommands(): array
     {
-        $commands = Arikaim::config()->load('console.php',false);
+        global $container;
+
+        $commands = $container->get('config')->load('console.php',false);
 
         return (\is_array($commands) == true) ? $commands : [];
     }
@@ -36,14 +37,16 @@ class Console
      */
     public static function getExtensionsCommands(): array
     {
-        if (Arikaim::db()->isValidPdoConnection() == false) {
+        global $container;
+
+        if ($container->get('db')->isValidPdoConnection() == false) {
             return [];
         }
         if (Install::isInstalled() == false) {
             return [];
         }
 
-        $extensions = Arikaim::packages()->create('extension')->getPackgesRegistry()->getPackagesList([
+        $extensions = $container->get('packages')->create('extension')->getPackgesRegistry()->getPackagesList([
             'status' => 1    
         ]); 
         
@@ -62,14 +65,16 @@ class Console
      */
     public static function getModulesCommands(): array
     {
-        if (Arikaim::db()->isValidPdoConnection() == false) {
+        global $container;
+
+        if ($container->get('db')->isValidPdoConnection() == false) {
             return [];
         }
         if (Install::isInstalled() == false) {
             return [];
         }
 
-        $modules = Arikaim::packages()->create('module')->getPackgesRegistry()->getPackagesList([
+        $modules = $container->get('packages')->create('module')->getPackgesRegistry()->getPackagesList([
             'status' => 1    
         ]);   
 

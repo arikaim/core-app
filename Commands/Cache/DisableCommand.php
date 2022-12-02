@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands\Cache;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  * Disable cache command
@@ -37,14 +36,16 @@ class DisableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
-        Arikaim::cache()->clear();
+        $container->get('cache')->clear();
         
-        Arikaim::config()->setBooleanValue('settings/cache',false);
-        $result = Arikaim::config()->save();
+        $container->get('config')->setBooleanValue('settings/cache',false);
+        $result = $container->get('config')->save();
 
         if ($result !== true) {
-            $error = Arikaim::errors()->getError('CACHE_DISABLE_ERROR');
+            $error = $container->get('errors')->getError('CACHE_DISABLE_ERROR');
             $this->showError($error);
             return;
         } 

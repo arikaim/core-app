@@ -10,7 +10,6 @@
 namespace Arikaim\Core\App\Commands;
 
 use Arikaim\Core\Console\ConsoleCommand;
-use Arikaim\Core\Arikaim;
 
 /**
  *  Clear Logs command
@@ -36,9 +35,11 @@ class ClearLogsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         $this->showTitle();
     
-         Arikaim::logger()->deleteSystemLogs();
+         $container->get('logger')->deleteSystemLogs();
        
         $this->showCompleted();
     }

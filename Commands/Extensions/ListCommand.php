@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
-use Arikaim\Core\Arikaim;
 
 /**
  * Extensions list command
@@ -40,12 +39,13 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
+        global $container;
+        
         $this->showTitle();
-
         $this->table()->setHeaders(['Name','Version','Status','Installed']);
         $this->table()->setStyle('compact');
 
-        $manager = Arikaim::packages()->create('extension');
+        $manager = $container->get('packages')->create('extension');
         $items = $manager->getPackages();
     
         foreach ($items as $name) {

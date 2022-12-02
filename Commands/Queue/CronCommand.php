@@ -12,8 +12,6 @@ namespace Arikaim\Core\App\Commands\Queue;
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\System\System;
-use Arikaim\Core\Arikaim;
-use Arikaim\Core\Interfaces\Job\JobLogInterface;
 use Arikaim\Core\Interfaces\Job\RecurringJobInterface;
 use Arikaim\Core\Interfaces\Job\ScheduledJobInterface;
 use Exception;
@@ -43,12 +41,14 @@ class CronCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
+        global $container;
+
         // unlimited execution time
         System::setTimeLimit(0); 
        
         $this->showTitle();
 
-        $jobs = Arikaim::queue()->getJobsDue();
+        $jobs = $container->get('queue')->getJobsDue();
         $jobsDue = \count($jobs);
 
         $this->writeFieldLn('Jobs due ',$jobsDue); 
@@ -71,10 +71,12 @@ class CronCommand extends ConsoleCommand
      */
     protected function runJobs(array $jobs): int
     {
+        global $container;
+        
         $executed = 0;  
         
         foreach ($jobs as $item) {
-            $job = Arikaim::queue()->createJobFromArray($item);
+            $job = $container->get('queue')->createJobFromArray($item);
             $isDue = true;
             if (($job instanceof RecurringJobInterface) || ($job instanceof ScheduledJobInterface)) {
                 $isDue = $job->isDue();
@@ -87,7 +89,7 @@ class CronCommand extends ConsoleCommand
             $name = (empty($job->getName()) == true) ? $job->getId() : $job->getName();
             try {
                 $this->writeLn(ConsoleHelper::checkMark() . $name);
-                $job = Arikaim::queue()->executeJob($job,
+                $job = $container->get('queue')->executeJob($job,
                     function($mesasge) {
                         $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
                     },function($error) {
@@ -99,11 +101,11 @@ class CronCommand extends ConsoleCommand
                     $executed++;                       
                 } else {
                     $this->writeLn(ConsoleHelper::errorMark() . ' Error executing job ' . $name);
-                    Arikaim::logger()->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
+                    $container->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
                 }
                 
             } catch (Exception $e) {
-                Arikaim::logger()->error('Failed to execute cron job,',['error' => $e->getMessage()]);
+                $container->get('logger')->error('Failed to execute cron job,',['error' => $e->getMessage()]);
             }           
         }
 
