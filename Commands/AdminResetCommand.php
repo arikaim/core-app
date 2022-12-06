@@ -60,7 +60,7 @@ class AdminResetCommand extends ConsoleCommand
             return;
         }
         $user = Model::create('Users')->getControlPanelUser();
-        if (\is_object($user) == false) {
+        if ($user == null) {
             $this->showError('Missing control panel user!');
             return;
         }

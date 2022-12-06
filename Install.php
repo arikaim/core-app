@@ -333,7 +333,7 @@ class Install
             $user->id
         );
 
-        return (\is_object($result) == true) ? true : $result;
+        return (\is_object($result) == true);
     }
 
     /**
