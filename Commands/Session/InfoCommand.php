@@ -38,7 +38,7 @@ class InfoCommand extends ConsoleCommand
     protected function executeCommand($input, $output)
     {
         $this->showTitle();
-        
+    
         $params = Session::getParams();
         $label = ($params['use_cookies'] == true) ? 'true' : 'false';
 
