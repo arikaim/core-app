@@ -30,6 +30,6 @@ class ControlPanel extends Controller
        
         $this->get('access')->withProvider('session');
 
-        return $this->pageLoad($request,$response,$data);       
+        return $this->pageLoad($request,$response,$data,null,'en');       
     }
 }

@@ -10,6 +10,7 @@
 namespace Arikaim\Core\App\Commands\Cache;
 
 use Arikaim\Core\Console\ConsoleCommand;
+use Arikaim\Core\Actions\Actions;
 
 /**
  * Clear cache command
