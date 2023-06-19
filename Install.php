@@ -308,6 +308,7 @@ class Install
         // Routes
         $container->get('event')->registerEvent('core.route.disable','After disable route.');
         $container->get('event')->registerEvent('core.route.enable','After disable route.');
+        $container->get('event')->registerEvent('core.page.load','After html page is loaded.');
     } 
 
     /**
