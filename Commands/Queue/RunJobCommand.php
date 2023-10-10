@@ -25,7 +25,7 @@ class RunJobCommand extends ConsoleCommand
      */
     protected function configure(): void
     {
-        $this->setName('job:run')->setDescription('Run job.');
+        $this->setName('job:run')->setDescription('Run job from job registry.');
         $this->addOptionalArgument('name','Job Name');
     }
 
@@ -46,14 +46,10 @@ class RunJobCommand extends ConsoleCommand
             $this->showError('Job name required!');
             return;
         }
-        if ($container->get('queue')->has($name) == false) {
-            $this->showError('Not valid job name!');
-            return;
-        } 
-    
+       
         $this->writeFieldLn('Name',$name);
    
-        $job = $container->get('queue')->run($name,
+        $job = $container->get('queue')->run($name,null,null,
             function($mesasge) {
                 $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
             },function($error) {

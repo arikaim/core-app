@@ -48,17 +48,19 @@ class JobDetailsCommand extends ConsoleCommand
             $this->showError('Job name required!');
             return;
         }
-        if ($container->get('queue')->has($name) == false) {
-            $this->showError('Not valid job name!');
-            return;
-        } 
 
         $this->writeFieldLn('Name',$name);
 
         $job = $container->get('queue')->create($name);
-      
+
+        if ($job == null) {
+            $this->showError('Not valid job name!');
+            return;
+        } 
+
         $this->table()->setHeaders(['','']);
-        $this->table()->setStyle('compact');         
+        $this->table()->setStyle('compact');   
+              
         $jobDetails = $job->toArray();
         foreach($jobDetails as $key => $value) {
             $value = (\is_array($value) == true) ? Arrays::toString($value) : $value;

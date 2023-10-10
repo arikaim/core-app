@@ -16,6 +16,8 @@ use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\App\Install;
 use Arikaim\Core\App\PostInstallActions;
 use Arikaim\Core\Console\ConsoleHelper;
+use Arikaim\Core\App\SystemUpdate;
+
 
 /**
  * Repair (reinstall) command class
@@ -41,9 +43,14 @@ class RepairInstallCommand extends ConsoleCommand
     protected function executeCommand($input, $output)
     {
         $this->showTitle();
-      
-        $install = new Install();
         $doneMsg = '  ' . ConsoleHelper::checkMark() . ' ';
+
+        // update 
+        SystemUpdate::run(function($message) use($doneMsg) {                  
+            $this->style->writeLn($doneMsg . $message);
+        });
+
+        $install = new Install();
         $this->style->text(ConsoleHelper::getDescriptionText('Core'));
         $this->style->newLine();
         $result = $install->install(

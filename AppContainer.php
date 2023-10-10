@@ -191,7 +191,7 @@ class AppContainer
             },
             // Jobs queue
             'queue' => function($container) {                     
-                return new \Arikaim\Core\Queue\QueueManager(Model::Jobs(),$container['logger']);          
+                return new \Arikaim\Core\Queue\QueueManager(Model::Queue(),$container['logger']);          
             },          
             // Modules manager
             'modules' => function($container) {           

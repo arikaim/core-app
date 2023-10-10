@@ -45,6 +45,8 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
     public function getFunctions() 
     {
         return [
+            // component
+            new TwigFunction('componentProperties',[$this,'getComponentProperties']),       
             new TwigFunction('getSystemRequirements',['Arikaim\\Core\\App\\Install','checkSystemRequirements']),                      
             new TwigFunction('package',[$this,'createPackageManager']),       
             new TwigFunction('system',[$this,'system']),           
@@ -60,6 +62,32 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('macro',['Arikaim\\Core\\Utils\\Path','getMacroPath']),         
             new TwigFunction('systemMacro',[$this,'getSystemMacroPath'])
         ];          
+    }
+
+    /**
+     * Get component properties
+     *
+     * @param string      $name
+     * @param string      $language
+     * @param array|null  $params
+     * @param string|null $type
+     * @return array
+     */
+    public function getComponentProperties(string $name, string $language, ?array $params = [], ?string $type = null): array
+    {
+        global $container;
+
+        $component = $container->get('view')->createComponent($name,$language,$type ?? 'arikaim');
+        $component->resolve($params);
+
+        if (\method_exists($component,'loadEditorOptions') == true) {
+            $component->loadEditorOptions();
+        }
+
+        return [
+            'properties' => $component->getProperties(),
+            'context'    => $component->getContext(),
+        ];
     }
 
     /**

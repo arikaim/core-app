@@ -560,7 +560,8 @@ class Install
             'EventSubscribersSchema',
             'ExtensionsSchema',
             'ModulesSchema',
-            'JobsSchema',
+            'QueueSchema',
+            'JobsRegistrySchema',
             'LanguageSchema',
             'PermissionsSchema',
             'AccessTokensSchema',
@@ -589,7 +590,8 @@ class Install
             'event_subscribers',
             'events',
             'language',
-            'jobs',
+            'queue',
+            'jobs_registry',
             'access_tokens',
             'drivers'
         ];
