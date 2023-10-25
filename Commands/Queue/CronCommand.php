@@ -12,8 +12,6 @@ namespace Arikaim\Core\App\Commands\Queue;
 use Arikaim\Core\Console\ConsoleCommand;
 use Arikaim\Core\Console\ConsoleHelper;
 use Arikaim\Core\System\System;
-use Arikaim\Core\Interfaces\Job\RecurringJobInterface;
-use Arikaim\Core\Interfaces\Job\ScheduledJobInterface;
 use Exception;
 
 /**
@@ -77,18 +75,15 @@ class CronCommand extends ConsoleCommand
         
         foreach ($jobs as $item) {
             $job = $container->get('queue')->createJobFromArray($item);
-            $isDue = true;
-            if (($job instanceof RecurringJobInterface) || ($job instanceof ScheduledJobInterface)) {
-                $isDue = $job->isDue();
-            } 
-               
-            if ($isDue == false) {             
+
+            if ($job->isDue() == false) {   
+                echo "not due";         
                 continue;
             }
           
             $name = (empty($job->getName()) == true) ? $job->getId() : $job->getName();
+            
             try {
-                $this->writeLn(ConsoleHelper::checkMark() . $name);
                 $job = $container->get('queue')->executeJob($job,
                     function($mesasge) {
                         $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
@@ -97,10 +92,11 @@ class CronCommand extends ConsoleCommand
                     }
                 );
 
-                if ($job->hasSuccess() == true) {                                         
+                if ($job->hasSuccess() == true) {               
+                    $this->writeLn(ConsoleHelper::checkMark() . $name);   
                     $executed++;                       
                 } else {
-                    $this->writeLn(ConsoleHelper::errorMark() . ' Error executing job ' . $name);
+                    $this->writeLn(ConsoleHelper::errorMark() . 'Job: ' . $name . ' Error: ' . $job->getErrors()[0]);
                     $container->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
                 }
                 
