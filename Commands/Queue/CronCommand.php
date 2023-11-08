@@ -76,8 +76,7 @@ class CronCommand extends ConsoleCommand
         foreach ($jobs as $item) {
             $job = $container->get('queue')->createJobFromArray($item);
 
-            if ($job->isDue() == false) {   
-                echo "not due";         
+            if ($job->isDue() == false) {    
                 continue;
             }
           
