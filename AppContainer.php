@@ -26,7 +26,7 @@ class AppContainer
      * @param array $config
      * @return Container
      */
-    public static function create(bool $console = false, $config = [])
+    public static function create(bool $console = false, $config = []): object
     {
         return new Container([
             'config' => function() {                            
