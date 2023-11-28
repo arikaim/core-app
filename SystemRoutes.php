@@ -366,6 +366,11 @@ class SystemRoutes
                 'pattern' => '/core/api/install/repair',
                 'handler' => 'Arikaim\Core\Api\Install:repair',
                 'auth'    => 'session'         
+            ],
+            [
+                'pattern' => '/core/api/install/storage',
+                'handler' => 'Arikaim\Core\Api\Install:initStorage',
+                'auth'    => 'session'         
             ]
         ],
         'DELETE' => [

@@ -260,6 +260,7 @@ class Install
     public function initStorage(): bool
     {   
         global $container;
+        
         if ($container->get('storage')->has('bin') == false) {          
             $container->get('storage')->createDir('bin');
         } 
