@@ -36,12 +36,11 @@ class ClearCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
     
-        $container->get('cache')->clear();
-
+        $arikaim->get('cache')->clear();
       
         $this->showCompleted();
     }

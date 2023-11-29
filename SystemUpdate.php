@@ -23,9 +23,9 @@ class SystemUpdate
      */
     public static function run(?Closure $onProgress = null): bool
     {
-        global $container;
+        global $arikaim;
 
-        $schema = $container->get('db')->getCapsule()->schema();
+        $schema = $arikaim->get('db')->getCapsule()->schema();
         
         if ($schema->hasTable('jobs') == true) {
             // rename jobs tabel to queue

@@ -40,7 +40,7 @@ class JobDetailsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     { 
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $name = $input->getArgument('name');
@@ -51,7 +51,7 @@ class JobDetailsCommand extends ConsoleCommand
 
         $this->writeFieldLn('Name',$name);
 
-        $job = $container->get('queue')->create($name);
+        $job = $arikaim->get('queue')->create($name);
 
         if ($job == null) {
             $this->showError('Not valid job name!');

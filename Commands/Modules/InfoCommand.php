@@ -39,7 +39,7 @@ class InfoCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $name = $input->getArgument('name');
@@ -48,7 +48,7 @@ class InfoCommand extends ConsoleCommand
             return;
         }
 
-        $manager = $container->get('packages')->create('module');
+        $manager = $arikaim->get('packages')->create('module');
         if ($manager->hasPackage($name) == false) {
             $this->showError('Module ' . $name . ' not exists!');
             return;

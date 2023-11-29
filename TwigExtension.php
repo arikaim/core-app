@@ -162,6 +162,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('timeInterval',['Arikaim\\Core\\Utils\\TimeInterval','create']),          
             new TwigFunction('currentYear',['Arikaim\\Core\\Utils\\DateTime','getCurrentYear']),
             new TwigFunction('today',['Arikaim\\Core\\Utils\\DateTime','getCurrentTimestamp']),
+            new TwigFunction('createDate',['Arikaim\\Core\\Utils\\DateTime','create']),
             // unique Id
             new TwigFunction('createUuid',['Arikaim\\Core\\Utils\\Uuid','create']),
             new TwigFunction('createToken',['Arikaim\\Core\\Utils\\Utils','createToken']),
@@ -206,9 +207,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getAccess()
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('access');
+        return $arikaim->get('access');
     }
 
     /**
@@ -259,9 +260,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getCache()
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('cache');
+        return $arikaim->get('cache');
     } 
 
     /**
@@ -271,9 +272,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getRelationsMap(): ?array
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('db')->getRelationsMap();
+        return $arikaim->get('db')->getRelationsMap();
     }
 
     /**
@@ -285,14 +286,14 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     */
     public function getCurrentUrl(bool $full = true, ?string $path = null): string
     {
-        global $container;
+        global $arikaim;
 
         $url = ($full == true) ? DOMAIN . $_SERVER['REQUEST_URI'] : $_SERVER['REQUEST_URI'];  
         if ($path == null) {
             return $url;
         }
         
-        $pagePath = $container->get('view')->getGlobalVar('current_url_path','');
+        $pagePath = $arikaim->get('view')->getGlobalVar('current_url_path','');
 
         return \rtrim($pagePath,'/') . $path;       
     }
@@ -304,9 +305,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function pageHead(): object
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('page')->head();
+        return $arikaim->get('page')->head();
     }
 
     /**
@@ -317,9 +318,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function addPageHeadCode(string $code): void
     {
-        global $container;
+        global $arikaim;
 
-        $container->get('page')->head()->set('code',$container->get('page')->head()->get('code') . $code);
+        $arikaim->get('page')->head()->set('code',$arikaim->get('page')->head()->get('code') . $code);
     }
 
     /**
@@ -332,9 +333,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function loadComponent(string $name, ?array $params = [], ?string $type = null)
     {              
-        global $container;
+        global $arikaim;
         
-        return $container
+        return $arikaim
             ->get('page')
             ->renderHtmlComponent($name,$params ?? [],null,$type)
             ->getHtmlCode();
@@ -347,9 +348,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getLanguage(): string
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('page')->getLanguage();
+        return $arikaim->get('page')->getLanguage();
     }
 
     /**
@@ -408,9 +409,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         ?string $language = null
     )
     {
-        global $container;
+        global $arikaim;
 
-        $route = $container->get('routes')->getRoutes([
+        $route = $arikaim->get('routes')->getRoutes([
             'name'           => $routeName,
             'extension_name' => $extension
         ]);
@@ -508,22 +509,22 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getService(string $name)
     {
-        global $container;
+        global $arikaim;
 
         if (\in_array($name,$this->protectedServices) == true) {
-            return ($container->get('access')->hasControlPanelAccess() == true) ? $container->get($name) : false;           
+            return ($arikaim->get('access')->hasControlPanelAccess() == true) ? $arikaim->get($name) : false;           
         }
 
         if (\in_array($name,$this->userProtectedServices) == true) {
-            return ($container->get('access')->isLogged() == true) ? $container->get($name) : false;           
+            return ($arikaim->get('access')->isLogged() == true) ? $arikaim->get($name) : false;           
         }
 
-        if ($container->has($name) == false) {
+        if ($arikaim->has($name) == false) {
             // try from service container
-            return $container->get('service')->get($name);
+            return $arikaim->get('service')->get($name);
         }
 
-        return $container->get($name);
+        return $arikaim->get($name);
     }
 
     /**
@@ -536,14 +537,14 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getDirectoryFiles(string $path, bool $recursive = false, ?string $fileSystemName = null)
     {
-        global $container;
+        global $arikaim;
         
         // Control Panel only
-        if ($container->get('access')->isLogged() == false) {
+        if ($arikaim->get('access')->isLogged() == false) {
             return false;
         }
 
-        return $container->get('storage')->listContents($path,$recursive,$fileSystemName);
+        return $arikaim->get('storage')->listContents($path,$recursive,$fileSystemName);
     }
 
     /**
@@ -557,10 +558,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function createModel(?string $modelClass, ?string $extension = null, bool $showError = false): ?object
     {
-        global $container;
+        global $arikaim;
 
         if (\in_array($modelClass,$this->protectedModels) == true) {
-            return ($container->get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension,null,$showError) : null;           
+            return ($arikaim->get('access')->hasControlPanelAccess() == true) ? Model::create($modelClass,$extension,null,$showError) : null;           
         }
 
         return Model::create($modelClass,$extension,null,$showError);
@@ -584,9 +585,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getCurrentLanguage(): ?array 
     {
-        global $container;
+        global $arikaim;
 
-        $language = $container->get('page')->getLanguage();
+        $language = $arikaim->get('page')->getLanguage();
         $model = Model::Language()->where('code','=',$language)->first();
 
         return ($model == null) ? null : $model->toArray();
@@ -601,9 +602,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getOption($name, $default = null) 
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('options')->get($name,$default);          
+        return $arikaim->get('options')->get($name,$default);          
     }
 
     /**
@@ -615,9 +616,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getOptions($searchKey, $compactKeys = false)
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('options')->searchOptions($searchKey,$compactKeys);       
+        return $arikaim->get('options')->searchOptions($searchKey,$compactKeys);       
     }
 
     /**
@@ -628,9 +629,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function fetch($url)
     {
-        global $container;
+        global $arikaim;
 
-        $response = $container->get('http')->get($url);
+        $response = $arikaim->get('http')->get($url);
         
         return (\is_object($response) == true) ? $response->getBody() : null;
     }

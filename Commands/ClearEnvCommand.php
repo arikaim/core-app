@@ -38,12 +38,12 @@ class ClearEnvCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
        
-        $container->get('config')->setValue('environment',[]); 
-        $container->get('config')->save();
+        $arikaim->get('config')->setValue('environment',[]); 
+        $arikaim->get('config')->save();
 
         $this->showCompleted();  
     }

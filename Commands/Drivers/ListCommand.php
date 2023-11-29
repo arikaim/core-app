@@ -39,14 +39,14 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
       
         $this->table()->setHeaders(['Status','Name','Display Name','Category','Version']);
         $this->table()->setStyle('compact');
 
-        $items = $container->get('driver')->getList();
+        $items = $arikaim->get('driver')->getList();
 
         foreach ($items as $driver) {
             $label = ($driver['status'] == 1) ? ConsoleHelper::getLabelText('enabled','green') : ConsoleHelper::getLabelText('disabled','red');

@@ -37,14 +37,14 @@ class EnableInstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
       
-        $container->get('config')->setBooleanValue('settings/disableInstallPage',false);
+        $arikaim->get('config')->setBooleanValue('settings/disableInstallPage',false);
         // save and reload config file
-        $container->get('config')->save();
-        $container->get('cache')->clear();
+        $arikaim->get('config')->save();
+        $arikaim->get('cache')->clear();
         
         $this->showCompleted();  
     }

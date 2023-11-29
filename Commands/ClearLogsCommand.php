@@ -35,11 +35,11 @@ class ClearLogsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
     
-         $container->get('logger')->deleteSystemLogs();
+         $arikaim->get('logger')->deleteSystemLogs();
        
         $this->showCompleted();
     }

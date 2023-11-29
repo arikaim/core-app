@@ -43,7 +43,7 @@ class InstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $install = new Install();
@@ -108,12 +108,12 @@ class InstallCommand extends ConsoleCommand
 
         if ($start == 1) {           
             // save config file               
-            $container->get('config')->setValue('db/username',$databaseUserName);
-            $container->get('config')->setValue('db/password',$databasePassword);
-            $container->get('config')->setValue('db/database',$databaseName);         
-            $container->get('config')->save();
+            $arikaim->get('config')->setValue('db/username',$databaseUserName);
+            $arikaim->get('config')->setValue('db/password',$databasePassword);
+            $arikaim->get('config')->setValue('db/database',$databaseName);         
+            $arikaim->get('config')->save();
               
-            $result = $container->get('db')->testConnection($container->get('config')->get('db'));
+            $result = $arikaim->get('db')->testConnection($arikaim->get('config')->get('db'));
             if ($result == false) {
                 $this->showError("Can't connect to db!");
                 return;

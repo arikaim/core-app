@@ -38,7 +38,7 @@ class RunJobCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     { 
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $name = $input->getArgument('name');
@@ -49,7 +49,7 @@ class RunJobCommand extends ConsoleCommand
        
         $this->writeFieldLn('Name',$name);
    
-        $job = $container->get('queue')->run($name,null,null,
+        $job = $arikaim->get('queue')->run($name,null,null,
             function($mesasge) {
                 $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
             },function($error) {
@@ -64,7 +64,7 @@ class RunJobCommand extends ConsoleCommand
             $this->showError('Error');
             $this->showErrorDetails($job->getErrors());
             if ($job instanceof JobLogInterface) {
-                $container->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
+                $arikaim->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
             }
         }                 
     }    

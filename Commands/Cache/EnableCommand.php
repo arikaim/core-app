@@ -36,17 +36,17 @@ class EnableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
         
         $this->showTitle();
         
-        $container->get('config')->setBooleanValue('settings/cache',true);
-        $result = $container->get('config')->save();
+        $arikaim->get('config')->setBooleanValue('settings/cache',true);
+        $result = $arikaim->get('config')->save();
 
-        $container->get('cache')->clear();
+        $arikaim->get('cache')->clear();
         
         if ($result !== true) {
-            $error = $container->get('errors')->getError('CACHE_ENABLE_ERROR');
+            $error = $arikaim->get('errors')->getError('CACHE_ENABLE_ERROR');
             $this->showError($error);
             return;
         } 

@@ -39,13 +39,13 @@ class ListCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
         
         $this->showTitle();
         $this->table()->setHeaders(['Name','Version','Status','Installed']);
         $this->table()->setStyle('compact');
 
-        $manager = $container->get('packages')->create('extension');
+        $manager = $arikaim->get('packages')->create('extension');
         $items = $manager->getPackages();
     
         foreach ($items as $name) {

@@ -23,9 +23,9 @@ class Console
      */
     public static function getCoreCommands(): array
     {
-        global $container;
+        global $arikaim;
 
-        $commands = $container->get('config')->load('console.php',false);
+        $commands = $arikaim->get('config')->load('console.php',false);
 
         return (\is_array($commands) == true) ? $commands : [];
     }
@@ -37,16 +37,16 @@ class Console
      */
     public static function getExtensionsCommands(): array
     {
-        global $container;
+        global $arikaim;
 
-        if ($container->get('db')->isValidPdoConnection() == false) {
+        if ($arikaim->get('db')->isValidPdoConnection() == false) {
             return [];
         }
         if (Install::isInstalled() == false) {
             return [];
         }
 
-        $extensions = $container->get('packages')->create('extension')->getPackgesRegistry()->getPackagesList([
+        $extensions = $arikaim->get('packages')->create('extension')->getPackgesRegistry()->getPackagesList([
             'status' => 1    
         ]); 
         
@@ -65,16 +65,16 @@ class Console
      */
     public static function getModulesCommands(): array
     {
-        global $container;
+        global $arikaim;
 
-        if ($container->get('db')->isValidPdoConnection() == false) {
+        if ($arikaim->get('db')->isValidPdoConnection() == false) {
             return [];
         }
         if (Install::isInstalled() == false) {
             return [];
         }
 
-        $modules = $container->get('packages')->create('module')->getPackgesRegistry()->getPackagesList([
+        $modules = $arikaim->get('packages')->create('module')->getPackgesRegistry()->getPackagesList([
             'status' => 1    
         ]);   
 

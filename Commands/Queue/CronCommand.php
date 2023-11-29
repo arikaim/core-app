@@ -39,14 +39,14 @@ class CronCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         // unlimited execution time
         System::setTimeLimit(0); 
        
         $this->showTitle();
 
-        $jobs = $container->get('queue')->getJobsDue();
+        $jobs = $arikaim->get('queue')->getJobsDue();
         $jobsDue = \count($jobs);
 
         $this->writeFieldLn('Jobs due ',$jobsDue); 
@@ -69,12 +69,12 @@ class CronCommand extends ConsoleCommand
      */
     protected function runJobs(array $jobs): int
     {
-        global $container;
+        global $arikaim;
         
         $executed = 0;  
         
         foreach ($jobs as $item) {
-            $job = $container->get('queue')->createJobFromArray($item);
+            $job = $arikaim->get('queue')->createJobFromArray($item);
 
             if ($job->isDue() == false) {    
                 continue;
@@ -83,7 +83,7 @@ class CronCommand extends ConsoleCommand
             $name = (empty($job->getName()) == true) ? $job->getId() : $job->getName();
             
             try {
-                $job = $container->get('queue')->executeJob($job,
+                $job = $arikaim->get('queue')->executeJob($job,
                     function($mesasge) {
                         $this->writeLn('  ' . ConsoleHelper::checkMark() . $mesasge);
                     },function($error) {
@@ -96,11 +96,11 @@ class CronCommand extends ConsoleCommand
                     $executed++;                       
                 } else {
                     $this->writeLn(ConsoleHelper::errorMark() . 'Job: ' . $name . ' Error: ' . $job->getErrors()[0]);
-                    $container->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
+                    $arikaim->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
                 }
                 
             } catch (Exception $e) {
-                $container->get('logger')->error('Failed to execute cron job,',['error' => $e->getMessage()]);
+                $arikaim->get('logger')->error('Failed to execute cron job,',['error' => $e->getMessage()]);
             }           
         }
 

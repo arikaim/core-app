@@ -40,7 +40,7 @@ class EventDetailsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
      
@@ -52,7 +52,7 @@ class EventDetailsCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
 
-        $event = $container->get('event')->getEvents(['name' => $name]);
+        $event = $arikaim->get('event')->getEvents(['name' => $name]);
         if (\is_array($event) == false) {
             $this->showError('Not valid event name.');
             return;
@@ -74,7 +74,7 @@ class EventDetailsCommand extends ConsoleCommand
         $this->newLine();
         $this->writeLn('Subscribers',' ','cyan');
 
-        $subscribers = $container->get('event')->getSubscribers($name); 
+        $subscribers = $arikaim->get('event')->getSubscribers($name); 
 
         foreach ($subscribers as $item) {
             $rows = [

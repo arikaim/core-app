@@ -39,7 +39,7 @@ class EnableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
         
         $this->showTitle();
 
@@ -50,7 +50,7 @@ class EnableCommand extends ConsoleCommand
         }
         $this->writeFieldLn('Name',$name);
 
-        $manager = $container->get('packages')->create('extension');
+        $manager = $arikaim->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');
@@ -64,7 +64,7 @@ class EnableCommand extends ConsoleCommand
         }
         $result = $manager->enablePackage($name);
 
-        $container->get('cache')->clear();
+        $arikaim->get('cache')->clear();
         if ($result == false) {
             $this->showError("Can't enable extension!");
             return;

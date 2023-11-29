@@ -40,7 +40,7 @@ class InfoCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
      
@@ -55,7 +55,7 @@ class InfoCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
 
-        $manager = $container->get('packages')->create('extension');
+        $manager = $arikaim->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');

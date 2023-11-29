@@ -39,7 +39,7 @@ class UnInstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $name = $input->getArgument('name');
@@ -49,7 +49,7 @@ class UnInstallCommand extends ConsoleCommand
         }
         $this->writeFieldLn('Name',$name);
 
-        $manager = $container->get('packages')->create('extension');
+        $manager = $arikaim->get('packages')->create('extension');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Extension ' . $name . ' not exists!');
@@ -58,7 +58,7 @@ class UnInstallCommand extends ConsoleCommand
 
         $result = $package->unInstall();
         
-        $container->get('cache')->clear();
+        $arikaim->get('cache')->clear();
         
         if ($result == false) {
             $this->showError("Can't uninstall extension!");

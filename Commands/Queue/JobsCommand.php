@@ -39,7 +39,7 @@ class JobsCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     { 
-        global $container;
+        global $arikaim;
 
         $this->showTitle();  
         $this->showTitle('Recurring Jobs');
@@ -47,7 +47,7 @@ class JobsCommand extends ConsoleCommand
         $this->table()->setStyle('compact');
 
         // Recurring jobs
-        $items = $container->get('queue')->getRecuringJobs();
+        $items = $arikaim->get('queue')->getRecuringJobs();
         foreach ($items as $item) {                  
             $row = ['',DateTime::dateTimeFormat($item['due_date']),$item['handler_class']];          
             $this->table()->addRow($row);
@@ -58,7 +58,7 @@ class JobsCommand extends ConsoleCommand
         $this->showTitle('Scheduled Jobs');
         $this->table()->setHeaders(['','Scheduled Time','Handler']);
 
-        $items = $container->get('queue')->getJobs(['schedule_time' => '*']);
+        $items = $arikaim->get('queue')->getJobs(['schedule_time' => '*']);
         $rows = [];
         foreach ($items as $item) {                  
             $row = ['',DateTime::dateTimeFormat($item['schedule_time']),$item['handler_class']];

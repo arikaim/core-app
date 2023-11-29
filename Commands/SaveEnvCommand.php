@@ -39,7 +39,7 @@ class SaveEnvCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $this->style->newLine();
@@ -59,9 +59,9 @@ class SaveEnvCommand extends ConsoleCommand
         $question = new Question("\t Enter base path: ",null);        
         $basePath = $helper->ask($input, $output, $question);
         
-        $container->get('config')->setValue('environment/host',\trim($host));
-        $container->get('config')->setValue('environment/basePath',\trim($basePath));         
-        $container->get('config')->save();
+        $arikaim->get('config')->setValue('environment/host',\trim($host));
+        $arikaim->get('config')->setValue('environment/basePath',\trim($basePath));         
+        $arikaim->get('config')->save();
 
         $this->style->newLine();
         $this->showCompleted();  

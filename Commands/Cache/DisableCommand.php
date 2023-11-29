@@ -36,16 +36,16 @@ class DisableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
-        $container->get('cache')->clear();
+        $arikaim->get('cache')->clear();
         
-        $container->get('config')->setBooleanValue('settings/cache',false);
-        $result = $container->get('config')->save();
+        $arikaim->get('config')->setBooleanValue('settings/cache',false);
+        $result = $arikaim->get('config')->save();
 
         if ($result !== true) {
-            $error = $container->get('errors')->getError('CACHE_DISABLE_ERROR');
+            $error = $arikaim->get('errors')->getError('CACHE_DISABLE_ERROR');
             $this->showError($error);
             return;
         } 

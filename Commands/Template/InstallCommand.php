@@ -36,7 +36,7 @@ class InstallCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
         $name = $input->getArgument('name');
@@ -47,7 +47,7 @@ class InstallCommand extends ConsoleCommand
         
         $this->writeFieldLn('Name',$name);
         
-        $manager = $container->get('packages')->create('template');
+        $manager = $arikaim->get('packages')->create('template');
         $package = $manager->createPackage($name);
         if ($package == false) {
             $this->showError('Theme ' . $name . ' not exists!');
@@ -56,7 +56,7 @@ class InstallCommand extends ConsoleCommand
 
         $result = $package->install();
      
-        $container->get('cache')->clear();
+        $arikaim->get('cache')->clear();
         
         if ($result === false) {
             $this->showError("Can't install theme!");

@@ -36,15 +36,15 @@ class DriverCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {
-        global $container;
+        global $arikaim;
 
         $this->showTitle();
          
-        $driver = $container->get('cache')->getDriver();
+        $driver = $arikaim->get('cache')->getDriver();
         $driverClass = \get_class($driver);
 
         $this->writeFieldLn('Class',$driverClass);
-        $this->writeFieldLn('Name',$container->get('cache')->getDriverName());
+        $this->writeFieldLn('Name',$arikaim->get('cache')->getDriverName());
       
         $this->showCompleted();
     }

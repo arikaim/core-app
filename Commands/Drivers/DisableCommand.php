@@ -36,27 +36,27 @@ class DisableCommand extends ConsoleCommand
      */
     protected function executeCommand($input, $output)
     {       
-        global $container;
+        global $arikaim;
         
         $this->showTitle(); 
         $name = $input->getArgument('name');
         if (empty($name) == true) {
-            $error = $container->get('errors')->getError('ARGUMENT_ERROR',['name' => 'name']);
+            $error = $arikaim->get('errors')->getError('ARGUMENT_ERROR',['name' => 'name']);
             $this->showError($error);
             return;
         }
         
         $this->writeFieldLn('Name',$name);
       
-        if ($container->get('driver')->has($name) == false) {
-            $error = $container->get('errors')->getError('DRIVER_NOT_EXISTS_ERROR',['name' => $name]);
+        if ($arikaim->get('driver')->has($name) == false) {
+            $error = $arikaim->get('errors')->getError('DRIVER_NOT_EXISTS_ERROR',['name' => $name]);
             $this->showError($error);
             return;
         }
        
-        $result = $container->get('driver')->disable($name);
+        $result = $arikaim->get('driver')->disable($name);
         if ($result == false) {
-            $error = $container->get('errors')->getError('DRIVER_DISABLE_ERROR');
+            $error = $arikaim->get('errors')->getError('DRIVER_DISABLE_ERROR');
             $this->showError($error);           
             return;
         }

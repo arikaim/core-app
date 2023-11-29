@@ -75,9 +75,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getComponentProperties(string $name, string $language, ?array $params = [], ?string $type = null): array
     {
-        global $container;
+        global $arikaim;
 
-        $component = $container->get('view')->createComponent($name,$language,$type ?? 'arikaim');
+        $component = $arikaim->get('view')->createComponent($name,$language,$type ?? 'arikaim');
         $component->resolve($params);
 
         if (\method_exists($component,'loadEditorOptions') == true) {
@@ -130,9 +130,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getRelationsMap(): ?array
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('db')->getRelationsMap();
+        return $arikaim->get('db')->getRelationsMap();
     }
 
     /**
@@ -152,9 +152,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function arikaimStore()
     {
-        global $container;
+        global $arikaim;
 
-        return ($container->get('access')->hasControlPanelAccess() == false) ? null : new ArikaimStore();         
+        return ($arikaim->get('access')->hasControlPanelAccess() == false) ? null : new ArikaimStore();         
     }
 
     /**
@@ -166,15 +166,15 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getConfigOption(string $key, $default = null)
     {
-        global $container;
+        global $arikaim;
 
-        if ($container->get('config')->hasReadAccess($key) == false) {
+        if ($arikaim->get('config')->hasReadAccess($key) == false) {
             // access denied 
             return false;
         }
-        $container->get('config')->reloadConfig();
+        $arikaim->get('config')->reloadConfig();
 
-        return $container->get('config')->getByPath($key,$default);         
+        return $arikaim->get('config')->getByPath($key,$default);         
     }
 
     /**
@@ -187,9 +187,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function loadJosnConfigFile(string $fileName, ?string $packageName = null, ?string $packageType = null)
     {
-        global $container;
+        global $arikaim;
 
-        if ($container->get('access')->hasControlPanelAccess() == false) {
+        if ($arikaim->get('access')->hasControlPanelAccess() == false) {
             return null;
         }
         $fileName = Path::CONFIG_PATH . $fileName;
@@ -215,10 +215,10 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function createPackageManager($packageType)
     {
-        global $container;
+        global $arikaim;
 
         // Control Panel only
-        return ($container->get('access')->hasControlPanelAccess() == false) ? false : $container->get('packages')->create($packageType);        
+        return ($arikaim->get('access')->hasControlPanelAccess() == false) ? false : $arikaim->get('packages')->create($packageType);        
     }
 
     /**
@@ -229,9 +229,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function hasModule(string $name): bool
     {
-        global $container;
+        global $arikaim;
 
-        return $container->get('modules')->hasModule($name);              
+        return $arikaim->get('modules')->hasModule($name);              
     }
 
     /**
@@ -241,8 +241,8 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function system()
     { 
-        global $container;
+        global $arikaim;
 
-        return ($container->get('access')->hasControlPanelAccess() == true) ? new System() : null;
+        return ($arikaim->get('access')->hasControlPanelAccess() == true) ? new System() : null;
     }
 }
