@@ -103,9 +103,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
             // html components
-            new TwigFunction('component',[$this,'loadComponent'],[
-                'needs_environment' => false,
-                'needs_context'     => false,
+            new TwigFunction('component',[$this,'loadComponent'],[                
+                'needs_context'     => true,
                 'is_safe'           => ['html']
             ]),                    
             // page              
@@ -326,18 +325,22 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Load component
      *
+     * @param array $context
      * @param string $name
      * @param array|null $params
      * @param string|null $type
      * @return string|null
      */
-    public function loadComponent(string $name, ?array $params = [], ?string $type = null)
+    public function loadComponent($context, string $name, ?array $params = [], ?string $type = null)
     {              
         global $arikaim;
         
         return $arikaim
             ->get('page')
-            ->renderHtmlComponent($name,$params ?? [],null,$type)
+            ->renderHtmlComponent($name,$params ?? [],null,$type,[
+                'component_location'      => $context['component_location'] ?? 0,
+                'component_template_name' => $context['component_template_name'] ?? ''
+            ])
             ->getHtmlCode();
     }
 
