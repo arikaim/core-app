@@ -162,6 +162,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('currentYear',['Arikaim\\Core\\Utils\\DateTime','getCurrentYear']),
             new TwigFunction('today',['Arikaim\\Core\\Utils\\DateTime','getCurrentTimestamp']),
             new TwigFunction('createDate',['Arikaim\\Core\\Utils\\DateTime','create']),
+            // text
+            new TwigFunction('Text',function($method,...$params) {
+                return \Arikaim\Core\Utils\Text::$method(...$params);
+            }),
             // unique Id
             new TwigFunction('createUuid',['Arikaim\\Core\\Utils\\Uuid','create']),
             new TwigFunction('createToken',['Arikaim\\Core\\Utils\\Utils','createToken']),
