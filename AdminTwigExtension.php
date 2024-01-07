@@ -21,7 +21,7 @@ use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
 
 /**
- *  Template engine control panel functions, filters and tests.
+ *  Template engine control panel functions, filters and tests (included only in admin poanel).
  */
 class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
@@ -47,21 +47,39 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
         return [
             // component
             new TwigFunction('componentProperties',[$this,'getComponentProperties']),       
+            // system
+            new TwigFunction('system',[$this,'system']),     
+            new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
+            new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),   
+            new TwigFunction('sessionInfo',['Arikaim\\Core\\Http\\Session','getParams']),       
             new TwigFunction('getSystemRequirements',['Arikaim\\Core\\App\\Install','checkSystemRequirements']),                      
+             // packages
             new TwigFunction('package',[$this,'createPackageManager']),       
-            new TwigFunction('system',[$this,'system']),           
             new TwigFunction('hasModule',[$this,'hasModule']),
+            // db
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
             new TwigFunction('hasTable',['Arikaim\\Core\\Db\\Schema','hasTable']),
             new TwigFunction('relationsMap',[$this,'getRelationsMap']),
+            // store
             new TwigFunction('arikaimStore',[$this,'arikaimStore']),
-            new TwigFunction('getConfigOption',[$this,'getConfigOption']),   
-            new TwigFunction('loadConfig',[$this,'loadJosnConfigFile']),  
-            new TwigFunction('sessionInfo',['Arikaim\\Core\\Http\\Session','getParams']),  
             // macros
             new TwigFunction('macro',['Arikaim\\Core\\Utils\\Path','getMacroPath']),         
-            new TwigFunction('systemMacro',[$this,'getSystemMacroPath'])
+            new TwigFunction('systemMacro',[$this,'getSystemMacroPath']),
+            // actions
+            new TwigFunction('createAction',[$this,'createAction']),
         ];          
+    }
+
+    /**
+     * Create action
+     *
+     * @param string $name
+     * @param string $package
+     * @return object
+     */
+    public function createAction(string $name, string $package): object
+    {
+        return \Arikaim\Core\Actions\Actions::create($name,$package)->getAction();
     }
 
     /**
