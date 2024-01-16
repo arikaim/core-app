@@ -44,9 +44,8 @@ class DisableCommand extends ConsoleCommand
         $this->showTitle();
 
         $name = $input->getArgument('name');
-        if (empty($name) == true) {
-            $error = $arikaim->get('errors')->getError('ARGUMENT_ERROR',['name' => 'name']);
-            $this->showError($error);
+        if (empty($name) == true) {           
+            $this->showError('ARGUMENT_ERROR');
             return;
         }
         
@@ -61,9 +60,8 @@ class DisableCommand extends ConsoleCommand
         }
         $installed = $package->getProperties()->get('installed');
        
-        if ($installed == false) {
-            $error = $arikaim->get('errors')->getError('EXTENSION_NOT_INSTALLED',['name' => $name]);
-            $this->showError($error);
+        if ($installed == false) {           
+            $this->showError('EXTENSION_NOT_INSTALLED');
             return;
         }
 

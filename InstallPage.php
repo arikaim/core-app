@@ -39,7 +39,7 @@ class InstallPage extends Controller
                 'system'    => new System()
             ]);                   
         } 
-        $data['error'] = $this->get('errors')->getError('INSTALLED_ERROR');
+        $data['error'] = 'INSTALLED_ERROR';
 
         return $this->pageSystemError($response,$data->toArray(),'system'); 
     }

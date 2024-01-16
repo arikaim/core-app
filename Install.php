@@ -168,9 +168,8 @@ class Install
             'Arikaim control panel access.'
         );
         if ($result == false) {    
-            if (Model::Permissions()->has(AccessInterface::CONTROL_PANEL) == false) {
-                $error = $arikaim->get('errors')->getError('REGISTER_PERMISSION_ERROR',['name' => 'ContorlPanel']);
-                $this->callback($onProgressError,$error);
+            if (Model::Permissions()->has(AccessInterface::CONTROL_PANEL) == false) {             
+                $this->callback($onProgressError,'REGISTER_PERMISSION_ERROR');
                 return false;
             }           
         } else {
@@ -493,10 +492,10 @@ class Install
         $phpVersion = System::getPhpVersion();
         $item['message'] = 'PHP ' . $phpVersion;
         $item['status'] = 0; // error   
-        if (\version_compare($phpVersion,'7.2','>=') == true) {               
+        if (\version_compare($phpVersion,'7.4','>=') == true) {               
             $item['status'] = 1; // ok                    
         } else {
-           $errors[] = $arikaim->get('errors')->getError('PHP_VERSION_ERROR');
+           $errors[] = 'PHP_VERSION_ERROR';
         }
         $info['items'][] = $item;
 
@@ -513,7 +512,7 @@ class Install
         if (System::hasPdoDriver($pdoDriver) == true) {
             $item['status'] = 1; // ok
         } else {
-           $errors[] = $arikaim->get('errors')->getError('PDO_ERROR');         
+           $errors[] = 'PDO_ERROR';         
         }
         $info['items'][] = $item;
 

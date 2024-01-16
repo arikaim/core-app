@@ -44,9 +44,8 @@ class DisableCommand extends ConsoleCommand
         $arikaim->get('config')->setBooleanValue('settings/cache',false);
         $result = $arikaim->get('config')->save();
 
-        if ($result !== true) {
-            $error = $arikaim->get('errors')->getError('CACHE_DISABLE_ERROR');
-            $this->showError($error);
+        if ($result !== true) {           
+            $this->showError('CACHE_DISABLE_ERROR');
             return;
         } 
 

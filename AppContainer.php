@@ -75,8 +75,7 @@ class AppContainer
             },
             'access' => function() use($config) {
                 return new \Arikaim\Core\Access\Access(
-                    Model::PermissionRelations(),
-                    Model::Users(),
+                    Model::PermissionRelations(),                
                     null,
                     ['key' => $config['settings']['jwtKey'] ?? 'jwtKey']
                 );          

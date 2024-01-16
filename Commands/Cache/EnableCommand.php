@@ -45,9 +45,8 @@ class EnableCommand extends ConsoleCommand
 
         $arikaim->get('cache')->clear();
         
-        if ($result !== true) {
-            $error = $arikaim->get('errors')->getError('CACHE_ENABLE_ERROR');
-            $this->showError($error);
+        if ($result !== true) {           
+            $this->showError('CACHE_ENABLE_ERROR');
             return;
         } 
       
