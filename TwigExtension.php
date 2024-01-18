@@ -111,7 +111,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('url',[Page::class,'getUrl']),   
             new TwigFunction('pageHead',[$this,'pageHead']),       
             new TwigFunction('addPageHeadCode',[$this,'addPageHeadCode']),       
-            new TwigFunction('currentUrl',[$this,'getCurrentUrl']),
+            new TwigFunction('currentUrl',[$this,'getCurrentUrl']),        
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
             new TwigFunction('getLanguage',[$this,'getLanguage']),    
@@ -309,7 +309,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function pageHead(): object
     {
         global $arikaim;
-
+        
         return $arikaim->get('page')->head();
     }
 
