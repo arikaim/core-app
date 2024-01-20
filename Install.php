@@ -13,6 +13,7 @@ use Arikaim\Core\Interfaces\Access\AccessInterface;
 use Arikaim\Core\Db\Schema;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\System\System;
+use Arikaim\Core\System\Process;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
 use Exception;
@@ -65,6 +66,9 @@ class Install
      */
     public function prepare(?Closure $onProgress = null, ?Closure $onError = null, ?array $requirements = null): bool
     {
+        // chown www-data:www-data (recursive)    
+        Process::runShellCommand('chown www-data:www-data ' . APP_PATH . ' -R ');
+
         $status = true;
         // check requirments
         $requirements = $requirements ?? Self::checkSystemRequirements();
