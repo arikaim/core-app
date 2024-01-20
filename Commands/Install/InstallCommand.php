@@ -48,12 +48,6 @@ class InstallCommand extends ConsoleCommand
         $this->showTitle();
         $install = new Install();
 
-        if (Install::isInstalled() == true) {   
-            $this->writeLn('Installed, use install:repair command to repair installation.');        
-            $this->newLine();
-            return;
-        }
-       
         // Requirements
         $this->style->text('Requirements');
         $this->newLine();
