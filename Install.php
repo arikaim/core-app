@@ -256,6 +256,17 @@ class Install
     }
 
     /**
+     * Chown command for storage fodler (recursive)
+     *
+     * @return void
+     */
+    public function changeStorageFolderOwner(): void
+    {
+        // chown www-data:www-data (recursive)    
+        Process::runShellCommand('chown www-data:www-data ' . Path::STORAGE_PATH . ' -R ');
+    }
+
+    /**
      * Create storage folders
      *
      * @return boolean
@@ -264,6 +275,8 @@ class Install
     {   
         global $arikaim;
         
+        $this->changeStorageFolderOwner();
+
         if ($arikaim->get('storage')->has('bin') == false) {          
             $arikaim->get('storage')->createDir('bin');
         } 

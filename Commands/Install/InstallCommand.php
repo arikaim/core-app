@@ -171,6 +171,8 @@ class InstallCommand extends ConsoleCommand
                 return;
             } 
 
+            $install->changeStorageFolderOwner();
+            
             $this->showCompleted();  
         }
     }
