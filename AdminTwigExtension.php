@@ -19,6 +19,7 @@ use Arikaim\Core\System\System;
 use Arikaim\Core\App\ArikaimStore;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
+use Arikaim\Core\Utils\Factory;
 
 /**
  *  Template engine control panel functions, filters and tests (included only in admin poanel).
@@ -60,6 +61,7 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
             new TwigFunction('hasTable',['Arikaim\\Core\\Db\\Schema','hasTable']),
             new TwigFunction('relationsMap',[$this,'getRelationsMap']),
+            new TwigFunction('schemaDescriptor',[$this,'getSchemaDescriptor']),
             // store
             new TwigFunction('arikaimStore',[$this,'arikaimStore']),
             // macros
@@ -68,6 +70,23 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             // actions
             new TwigFunction('createAction',[$this,'createAction']),
         ];          
+    }
+
+    /**
+     * Get schema properties descriptor
+     *
+     * @param string      $schemaClass
+     * @param string|null $extension
+     * @return array
+     */
+    public function getSchemaDescriptor(string $schemaClass, ?string $extension = null): array
+    {
+        $schema = Factory::createSchema($schemaClass,$extension);
+        if ($schema == null) {
+            return null;
+        }
+
+        return $schema->getDescriptor();
     }
 
     /**
