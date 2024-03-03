@@ -159,8 +159,7 @@ class AppContainer
             'email' => function($container) use($config) { 
                 return new \Arikaim\Core\View\Html\EmailView(
                     $container->get('view'),
-                    $container['config']['settings']['defaultLanguage'] ?? 'en',
-                    $config['settings']['emailCompiler'] ?? null
+                    $container['config']['settings']['defaultLanguage'] ?? 'en'
                 );
             },
             // Mailer
