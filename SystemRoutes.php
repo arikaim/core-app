@@ -216,7 +216,7 @@ class SystemRoutes
             [
                 'pattern' => '/core/api/language/change/{language_code}',
                 'handler' => 'Arikaim\Core\Api\Language:changeLanguage',
-                'auth'    => 'session'            
+                'auth'    => null         
             ],
             [
                 'pattern' => '/core/api/language/status',

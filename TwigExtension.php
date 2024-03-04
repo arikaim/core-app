@@ -115,6 +115,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             // template           
             new TwigFunction('loadLibraryFile',[$this,'loadLibraryFile']),    
             new TwigFunction('getLanguage',[$this,'getLanguage']),    
+            new TwigFunction('getLanguages',[$this,'getLanguages']),    
             new TwigFunction('readThemeModules',[$this,'readThemeModules']),             
             // paginator
             new TwigFunction('paginate',['Arikaim\\Core\\Paginator\\SessionPaginator','create']),
@@ -361,6 +362,18 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
+     * Get theme languages
+     *
+     * @return array
+     */
+    public function getLanguages(): array
+    {
+        global $arikaim;
+
+        return $arikaim->get('page')->getLanguages();
+    }
+
+    /**
      * Load Ui library file
      *
      * @param string $library
@@ -588,16 +601,13 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Return current language
      *
-     * @return array|null
+     * @return string
      */
-    public function getCurrentLanguage(): ?array 
+    public function getCurrentLanguage(): string
     {
         global $arikaim;
 
-        $language = $arikaim->get('page')->getLanguage();
-        $model = Model::Language()->where('code','=',$language)->first();
-
-        return ($model == null) ? null : $model->toArray();
+        return $arikaim->get('page')->getLanguage();
     }
 
     /**
