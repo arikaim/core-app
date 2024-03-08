@@ -80,7 +80,7 @@ class AppContainer
                     ['key' => $config['settings']['jwtKey'] ?? 'jwtKey']
                 );          
             },
-            'view' => function ($container)  use($config) {      
+            'view' => function ($container) use($config) {      
                 $cacheStatus = $config['settings']['cache'] ?? false;                                            
                
                 $view = new \Arikaim\Core\View\View(
@@ -115,7 +115,7 @@ class AppContainer
                 );
             }, 
             // Errors  
-            'errors' => function() use ($console) {
+            'errors' => function() use($console) {
                 return new \Arikaim\Core\System\Error\Errors(
                     Path::CONFIG_PATH . 'errors.json',
                     Path::CONFIG_PATH . 'console-errors.json',
@@ -157,9 +157,8 @@ class AppContainer
             },      
             // Init email view.
             'email' => function($container) use($config) { 
-                $viewClone = clone $container->get('view');
                 return new \Arikaim\Core\View\Html\EmailView(
-                    $viewClone,
+                    $container->get('view'),
                     $config['settings']['defaultLanguage'] ?? 'en'
                 );
             },
