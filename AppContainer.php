@@ -157,9 +157,10 @@ class AppContainer
             },      
             // Init email view.
             'email' => function($container) use($config) { 
+                $viewClone = clone $container->get('view');
                 return new \Arikaim\Core\View\Html\EmailView(
-                    $container->get('view'),
-                    $container['config']['settings']['defaultLanguage'] ?? 'en'
+                    $viewClone,
+                    $config['settings']['defaultLanguage'] ?? 'en'
                 );
             },
             // Mailer
