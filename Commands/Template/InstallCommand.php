@@ -12,7 +12,7 @@ namespace Arikaim\Core\App\Commands\Template;
 use Arikaim\Core\Console\ConsoleCommand;
 
 /**
- * Install theme command
+ * Install tempolate command
  */
 class InstallCommand extends ConsoleCommand
 {  
@@ -23,8 +23,8 @@ class InstallCommand extends ConsoleCommand
      */
     protected function configure(): void
     {
-        $this->setName('theme:install')->setDescription('Install theme');
-        $this->addOptionalArgument('name','Theme Name');
+        $this->setName('template:install')->setDescription('Install template');
+        $this->addOptionalArgument('name','Template Name');
     }
 
     /**
@@ -41,7 +41,7 @@ class InstallCommand extends ConsoleCommand
         $this->showTitle();
         $name = $input->getArgument('name');
         if (empty($name) == true) {
-            $this->showError('Theme name required!');
+            $this->showError('Template name required!');
             return;
         }
         
@@ -50,7 +50,7 @@ class InstallCommand extends ConsoleCommand
         $manager = $arikaim->get('packages')->create('template');
         $package = $manager->createPackage($name);
         if ($package == false) {
-            $this->showError('Theme ' . $name . ' not exists!');
+            $this->showError('Template ' . $name . ' not exists!');
             return;
         }
 
@@ -59,7 +59,7 @@ class InstallCommand extends ConsoleCommand
         $arikaim->get('cache')->clear();
         
         if ($result === false) {
-            $this->showError("Can't install theme!");
+            $this->showError("Can't install template!");
             return;
         }
 

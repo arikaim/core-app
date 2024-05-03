@@ -27,7 +27,7 @@ class ListCommand extends ConsoleCommand
      */
     protected function configure(): void
     {
-        $this->setName('theme:list')->setDescription('Themes list');
+        $this->setName('template:list')->setDescription('Templates list');
     }
 
     /**
