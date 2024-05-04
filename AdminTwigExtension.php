@@ -11,6 +11,7 @@ namespace Arikaim\Core\App;
 
 use Twig\TwigFunction;
 use Twig\TwigTest;
+use Twig\TwigFilter;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
@@ -145,7 +146,9 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getFilters() 
     {      
-        return [];
+        return [
+            new TwigFilter('jsonEncode',['Arikaim\\Core\\Utils\\Utils','jsonEncode']),
+        ];
     }
 
     /**

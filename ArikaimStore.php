@@ -20,13 +20,8 @@ class ArikaimStore
 {       
     const HOST                 = 'http://arikaim.com';
     const SIGNUP_URL           = Self::HOST . '/signup';  
-    const LOGIN_API_URL        = '';
-    const PACKAGE_VERSION_URL  = Self::HOST . '/api/repository/package/version/';
-    const PACKAGE_DOWNLOAD_URL = Self::HOST . '/api/repository/package/download';
-    const ORDER_REGISTER_URL   = Self::HOST . '/api/arikaim/order/register';
- 
-    const ORDER_TYPE_ENVATO   = 'envato';
-
+    const LOGIN_API_URL        = Self::HOST . '/api/users/login';
+   
     /**
      * Data config file name
      *
