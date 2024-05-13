@@ -21,7 +21,8 @@ class ArikaimStore
     const HOST                 = 'http://arikaim.com';
     const SIGNUP_URL           = Self::HOST . '/signup';  
     const LOGIN_API_URL        = Self::HOST . '/api/users/login';
-   
+    const RESET_PASSWORD_URL   = Self::HOST . '/login';
+
     /**
      * Data config file name
      *
@@ -50,6 +51,8 @@ class ArikaimStore
             $this->clear();
             $this->config->save();
         }
+
+        $this->config->reloadConfig();
     }
 
     /**
@@ -111,9 +114,7 @@ class ArikaimStore
      */
     public function getProduct(): array
     {
-        $product = $this->config->get('product',[]);
-
-        return (\is_array($product) == false) ? [] : $product;
+        return $this->config->get('product',[]);
     }
 
     /**
@@ -123,9 +124,7 @@ class ArikaimStore
      */
     public function getPackages(): array
     {
-        $packages = $this->config->get('packages',[]);
-
-        return (\is_array($packages) == false) ? [] : $packages;
+        return $this->config->get('packages',[]);
     }
 
     /**
@@ -180,10 +179,10 @@ class ArikaimStore
      * @param string $search
      * @return mixed
      */
-    public function fetchPackages(string $type, ?string $page = '1', string $search = '')
+    public function fetchPackages(?string $type, ?string $page = '1', string $search = '')
     {
         $page = (empty($search) == true) ? $page : '/' . $page;
-        $url = Self::HOST . '/api/store/product/list/' . $type . '/' . $search . $page;
+        $url = Self::HOST . '/api/store/product/list/' . $search . $page;
          
         return Curl::get($url);
     }
@@ -232,7 +231,15 @@ class ArikaimStore
     }
 
     /**
-     * Get signup url
+     * Get reset password url
+     */
+    public function getResetPasswordUrl(): string
+    {
+        return Self::RESET_PASSWORD_URL;
+    }
+
+    /**
+     * Get login url
     */
     public function getLoginUrl(): string
     {

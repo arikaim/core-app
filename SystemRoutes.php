@@ -90,7 +90,17 @@ class SystemRoutes
             [
                 'pattern' => '/core/api/store/product',
                 'handler' => 'Arikaim\Core\Api\Store:saveOrder',
-                'auth'    => null                
+                'auth'    => 'session'                
+            ],
+            [
+                'pattern' => '/core/api/store/login',
+                'handler' => 'Arikaim\Core\Api\Store:login',
+                'auth'    => 'session'                
+            ],
+            [
+                'pattern' => '/core/api/store/logout',
+                'handler' => 'Arikaim\Core\Api\Store:logout',
+                'auth'    => 'session'                
             ],
             // Ui component
             [
@@ -161,7 +171,7 @@ class SystemRoutes
             [
                 'pattern' => '/core/api/store/product/remove',
                 'handler' => 'Arikaim\Core\Api\Store:removeOrder',
-                'auth'    => null                
+                'auth'    => 'session'                
             ],
             // Paginator 
             [
