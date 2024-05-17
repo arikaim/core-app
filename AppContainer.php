@@ -66,12 +66,8 @@ class AppContainer
                 return new \Arikaim\Core\Http\HttpClient();
             }, 
             // Package manager factory
-            'packages' => function($container) {     
-                return new \Arikaim\Core\Packages\PackageManagerFactory(
-                    $container['cache'],
-                    $container['storage'],
-                    $container['http']
-                );          
+            'packages' => function() {     
+                return new \Arikaim\Core\Packages\PackageManagerFactory();          
             },
             'access' => function() use($config) {
                 return new \Arikaim\Core\Access\Access(
@@ -80,18 +76,14 @@ class AppContainer
                     ['key' => $config['settings']['jwtKey'] ?? 'jwtKey']
                 );          
             },
-            'view' => function ($container) use($config) {      
+            'view' => function () use($config) {      
                 $cacheStatus = $config['settings']['cache'] ?? false;                                            
                
-                $view = new \Arikaim\Core\View\View(
-                    $container['cache'],                   
+                $view = new \Arikaim\Core\View\View(         
                     Path::VIEW_PATH,
                     Path::EXTENSIONS_PATH, 
                     Path::TEMPLATES_PATH,
                     Path::COMPONENTS_PATH,
-                    [
-                        'access' => $container['access']
-                    ],
                     [
                         'cache'      => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
                         'debug'      => $config['settings']['debug'] ?? false,
@@ -136,12 +128,12 @@ class AppContainer
                 return Model::Routes();
             },
             // Routes
-            'routes' => function($container) {            
-                return new \Arikaim\Core\Routes\Routes(Model::Routes(),$container['cache']);  
+            'routes' => function() {            
+                return new \Arikaim\Core\Routes\Routes(Model::Routes());  
             },
             // Options
-            'options' => function($container) {                             
-                return new \Arikaim\Core\Options\Options($container->get('cache'),Model::Options());               
+            'options' => function() {                             
+                return new \Arikaim\Core\Options\Options(Model::Options());               
             },            
             // Drivers
             'driver' => function() {   
@@ -163,7 +155,7 @@ class AppContainer
                 );
             },
             // Mailer
-            'mailer' => function($container) use($config) {            
+            'mailer' => function($container) {            
                 $driverName =  $container['config']['settings']['mailerDriver'] ?? null;              
                
                 return new \Arikaim\Core\Mail\Mailer([
@@ -178,22 +170,22 @@ class AppContainer
                 );
             },    
             // Events manager 
-            'event' => function($container) use($config) {
+            'event' => function() use($config) {
                 return new \Arikaim\Core\Events\EventsManager(
-                    Model::Events(),Model::EventSubscribers(),
-                    $container['logger'],
+                    Model::Events(),
+                    Model::EventSubscribers(),
                     [
                         'log' => $config['settings']['logEvents'] ?? false 
                     ]
                 );
             },
             // Jobs queue
-            'queue' => function($container) {                     
-                return new \Arikaim\Core\Queue\QueueManager(Model::Queue(),$container['logger']);          
+            'queue' => function() {                     
+                return new \Arikaim\Core\Queue\QueueManager(Model::Queue());          
             },          
             // Modules manager
-            'modules' => function($container) {           
-                return new \Arikaim\Core\Extension\Modules($container->get('cache'));
+            'modules' => function() {           
+                return new \Arikaim\Core\Extension\Modules();
             },         
             // Service manager
             'service' => function() {           
