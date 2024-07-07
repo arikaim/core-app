@@ -583,7 +583,8 @@ class Install
             'PermissionsSchema',
             'AccessTokensSchema',
             'DriversSchema',
-            'LogsSchema'
+            'LogsSchema',
+            'SessionsSchema'
         ];
     }
 
