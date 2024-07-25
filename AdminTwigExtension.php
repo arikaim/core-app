@@ -94,11 +94,11 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
      * Create action
      *
      * @param string $name
-     * @param string $package
+     * @param mixed $package
      * @param array $options
      * @return object
      */
-    public function createAction(string $name, string $package, array $options = []): object
+    public function createAction(string $name, $package = null, array $options = []): object
     {
         return \Arikaim\Core\Actions\Actions::create($name,$package,$options)->getAction();
     }
