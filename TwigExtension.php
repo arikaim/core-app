@@ -20,7 +20,6 @@ use Arikaim\Core\View\Html\Page;
 use Arikaim\Core\Db\Model;
 use Arikaim\Core\Http\Url;
 use Arikaim\Core\Http\Session;
-use Arikaim\Core\Routes\Route;
 use Arikaim\Core\Utils\Path;
 use Arikaim\Core\View\Template\Tags\ComponentTagParser;
 use Arikaim\Core\View\Template\Tags\MdTagParser;
@@ -423,7 +422,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getPageUrl(
         string $routeName, 
-        ?string $extension, 
+        ?string $extension = null, 
         array $params = [], 
         bool $relative = false, 
         ?string $language = null
@@ -431,16 +430,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         global $arikaim;
 
-        $route = $arikaim->get('routes')->getRoutes([
-            'name'           => $routeName,
-            'extension_name' => $extension
-        ]);
-
-        if (isset($route[0]) == false) {
-            return false;
-        }
-        $urlPath = Route::getRouteUrl($route[0]['pattern'],$params);
-        
+        $urlPath = $arikaim->get('routes')->getUrlPath($routeName,$params);
+          
         return Page::getUrl($urlPath,!$relative,$language);
     }
 
