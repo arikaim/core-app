@@ -62,6 +62,10 @@ class InstallCommand extends ConsoleCommand
             $this->style->writeLn($label . $item['message']);
         }
 
+        $this->writeLn('');
+        $this->writeLn('Prepare');
+        $this->writeLn('');
+
         $install->prepare(
             function($messge) {
                 $msg = ConsoleHelper::checkMark() . $messge;

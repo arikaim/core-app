@@ -66,8 +66,10 @@ class Install
      */
     public function prepare(?Closure $onProgress = null, ?Closure $onError = null, ?array $requirements = null): bool
     {
-        // chown www-data:www-data (recursive)    
-        Process::runShellCommand('chown www-data:www-data ' . APP_PATH . ' -R ');
+        // run chown www-data:www-data (recursive)    
+        $chownCommand = 'chown www-data:www-data ' . APP_PATH . ' -R ';
+        $this->callback($onProgress,"Run command " . $chownCommand);
+        Process::runShellCommand($chownCommand);
 
         $status = true;
         // check requirments
@@ -80,22 +82,21 @@ class Install
         }
 
         // cache dir
+        $this->callback($onProgress,"Cache directory set writable.");
         File::makeDir(Path::CACHE_PATH,0777);
         $result = File::isWritable(Path::CACHE_PATH); 
         if ($result == false) {
             $this->callback($onError,"Can't set cache dir writable.");
             $status = false;
-        } else {
-            $this->callback($onProgress,"Cache directory set writable.");
-        }
+        } 
+
         // set config files writable
+        $this->callback($onProgress,"Config files set writable.");
         $result = Self::setConfigFilesWritable();
         if ($result == false) {
             $this->callback($onError,"Can't set config files writable.");
             $status = false;
-        } else {
-            $this->callback($onProgress,"Config files set writable.");
-        }
+        } 
 
         return $status;
     }

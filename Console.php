@@ -42,6 +42,7 @@ class Console
         if ($arikaim->get('db')->isValidPdoConnection() == false) {
             return [];
         }
+
         if (Install::isInstalled() == false) {
             return [];
         }
