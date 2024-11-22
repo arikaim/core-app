@@ -455,6 +455,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('emptyLabel',['Arikaim\\Core\\View\\Template\\Filters','emptyLabel']),
             new TwigFilter('sliceLabel',['Arikaim\\Core\\View\\Template\\Filters','sliceLabel']),
             new TwigFilter('baseClass',['Arikaim\\Core\\Utils\\Utils','getBaseClassName']),                        
+            new TwigFilter('unset',[$this,'unsetItems']),  
             // text
             new TwigFilter('renderText',['Arikaim\\Core\\Utils\\Text','render']),
             new TwigFilter('renderArray',['Arikaim\\Core\\Utils\\Text','renderMultiple']),
@@ -483,6 +484,29 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
+    /**
+     * Remove array item(s)
+     *
+     * @param mixed|array $data
+     * @param string $key
+     * @return mixed
+     */
+    public function unsetItems($data, string $key)
+    {
+        if (\is_array($data) == false) {
+            return $data;
+        }
+
+        $keys = \explode(',',$key);
+        foreach($keys as $key) {
+            if (isset($data[$key]) == true) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+    
     /**
      * Template engine tests
      *
