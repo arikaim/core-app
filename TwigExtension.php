@@ -140,6 +140,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('access',[$this,'getAccess']),   
             new TwigFunction('getCurrentLanguage',[$this,'getCurrentLanguage']),                          
             new TwigFunction('hasExtension',[$this,'hasExtension']),
+            new TwigFunction('setValue',['Arikaim\\Core\\Collection\\Arrays','setValue']),
             // session vars
             new TwigFunction('getSessionVar',[$this,'getSessionVar']),
             new TwigFunction('setSessionVar',[$this,'setSessionVar']),
@@ -515,7 +516,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function getTests() 
     {
         return [
-            new TwigTest('haveSubItems',['Arikaim\\Core\\Utils\\Arrays','haveSubItems']),
+            new TwigTest('haveSubItems',['Arikaim\\Core\\Collection\\Arrays','haveSubItems']),
             new TwigTest('object',['Arikaim\\Core\\View\\Template\\Tests','isObject']),
             new TwigTest('string',['Arikaim\\Core\\View\\Template\\Tests','isString']),
         ];
