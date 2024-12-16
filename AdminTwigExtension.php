@@ -61,7 +61,6 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
             // db
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
             new TwigFunction('hasTable',['Arikaim\\Core\\Db\\Schema','hasTable']),
-            new TwigFunction('relationsMap',[$this,'getRelationsMap']),
             new TwigFunction('schemaDescriptor',[$this,'getSchemaDescriptor']),
             // store
             new TwigFunction('arikaimStore',[$this,'arikaimStore']),
@@ -162,18 +161,6 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
         return [
             new TwigTest('versionCompare',['Arikaim\\Core\\View\\Template\\Tests','versionCompare'])
         ];
-    }
-
-    /**
-     * Get relatins type map (morph map)
-     *
-     * @return array|null
-     */
-    public function getRelationsMap(): ?array
-    {
-        global $arikaim;
-
-        return $arikaim->get('db')->getRelationsMap();
     }
 
     /**

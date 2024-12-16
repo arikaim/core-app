@@ -133,6 +133,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('createModel',[$this,'createModel']),
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
             new TwigFunction('relationsMap',[$this,'getRelationsMap']),
+            new TwigFunction('morphModel',[$this,'createMorphModel']),
             // other           
             new TwigFunction('getFileType',[$this,'getFileType']),           
             new TwigFunction('service',[$this,'getService']),    
@@ -279,6 +280,28 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         global $arikaim;
 
         return $arikaim->get('db')->getRelationsMap();
+    }
+
+    /**
+     * Create model from morph relations map
+     * @param string $type
+     * @param mixed $id
+     * @return object|null
+     */
+    public function createMorphModel(string $type, $id = null): ?object
+    {
+        if ($type == 'user') {
+            return null;
+        }
+      
+        $modelClass = $this->getRelationsMap()[$type] ?? null;
+        if (empty($modelClass) == true) {
+            return null;
+        }
+
+        $model = new $modelClass();
+
+        return (empty($id) == true) ? $model : $model->findById($id);
     }
 
     /**
