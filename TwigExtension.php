@@ -134,7 +134,8 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('showSql',['Arikaim\\Core\\Db\\Model','getSql']),
             new TwigFunction('relationsMap',[$this,'getRelationsMap']),
             new TwigFunction('morphModel',[$this,'createMorphModel']),
-            // other           
+            // other    
+            new TwigFunction('clone',[$this,'clone']),         
             new TwigFunction('getFileType',[$this,'getFileType']),           
             new TwigFunction('service',[$this,'getService']),    
             new TwigFunction('content',['Arikaim\\Core\\Arikaim','content']),     
@@ -177,7 +178,17 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         ];    
     }
 
-   /**
+    /**
+     * Clone object
+     * @param object $obj
+     * @return object
+     */
+    public function clone(object $obj): object 
+    {
+        return clone $obj;
+    }
+
+    /**
      * Read theme modules descriptor files
      *
      * @param string $templatePath

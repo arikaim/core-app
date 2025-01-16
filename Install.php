@@ -567,25 +567,25 @@ class Install
     private function getSystemSchemaClasses()
     {
         return [
-            'RoutesSchema',
-            'OptionsSchema',          
-            'UsersSchema',
-            'PermissionsSchema',
-            'PermissionRelationsSchema',
-            'UserGroupsSchema',
-            'UserGroupMembersSchema',
-            'EventsSchema',
-            'EventSubscribersSchema',
-            'ExtensionsSchema',
-            'ModulesSchema',
-            'QueueSchema',
-            'JobsRegistrySchema',
-            'LanguageSchema',
-            'PermissionsSchema',
-            'AccessTokensSchema',
-            'DriversSchema',
-            'LogsSchema',
-            'SessionsSchema'
+            'Routes',
+            'Options',          
+            'Users',
+            'Permissions',
+            'PermissionRelations',
+            'UserGroups',
+            'UserGroupMembers',
+            'Events',
+            'EventSubscribers',
+            'Extensions',
+            'Modules',
+            'Queue',
+            'JobsRegistry',
+            'Language',
+            'Permissions',
+            'AccessTokens',
+            'Drivers',
+            'Logs',
+            'Sessions'
         ];
     }
 

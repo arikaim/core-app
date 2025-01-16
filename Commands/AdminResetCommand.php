@@ -65,6 +65,9 @@ class AdminResetCommand extends ConsoleCommand
             return;
         }
         
+        $user->update([
+            'user_name' => 'admin'
+        ]);
         $result = $user->changePassword($user->id,$newPassword);
         if ($result == true) {
             $this->showCompleted();            
