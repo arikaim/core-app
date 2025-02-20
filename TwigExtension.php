@@ -9,7 +9,7 @@
 */
 namespace Arikaim\Core\App;
 
-use ParsedownExtra;
+use Parsedown;
 use Twig\TwigFunction;
 use Twig\TwigFilter;
 use Twig\TwigTest;
@@ -730,7 +730,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function parseMarkdown($content, $context = [])
     {
         if (empty($this->markdownParser) == true) {
-            $this->markdownParser = new ParsedownExtra();
+            $this->markdownParser = new Parsedown();
         }
 
         return $this->markdownParser->text($content);
