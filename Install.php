@@ -227,6 +227,7 @@ class Install
             $modulesManager = $arikaim->get('packages')->create('module');
             $result = $modulesManager->installAllPackages($onProgress,$onProgressError);
         } catch (Exception $e) {
+            echo $e->getMessage();
             return false;
         }
      
@@ -250,6 +251,7 @@ class Install
             $extensionManager = $arikaim->get('packages')->create('extension');
             $result = $extensionManager->installAllPackages($onProgress,$onProgressError);
         } catch (Exception $e) {
+            echo $e->getMessage();
             return false;
         }
 
