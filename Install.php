@@ -81,15 +81,6 @@ class Install
             $status = false;
         }
 
-        // cache dir
-        $this->callback($onProgress,"Cache directory set writable.");
-        File::makeDir(Path::CACHE_PATH,0777);
-        $result = File::isWritable(Path::CACHE_PATH); 
-        if ($result == false) {
-            $this->callback($onError,"Can't set cache dir writable.");
-            $status = false;
-        } 
-
         // set config files writable
         $this->callback($onProgress,"Config files set writable.");
         $result = Self::setConfigFilesWritable();
