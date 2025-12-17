@@ -21,6 +21,7 @@ use Arikaim\Core\Db\Model;
 use Arikaim\Core\Http\Url;
 use Arikaim\Core\Http\Session;
 use Arikaim\Core\Utils\Path;
+use Arikaim\Core\Utils\Text;
 use Arikaim\Core\View\Template\Tags\ComponentTagParser;
 use Arikaim\Core\View\Template\Tags\MdTagParser;
 use Arikaim\Core\View\Template\Tags\CacheTagParser;
@@ -494,6 +495,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             // text
             new TwigFilter('renderText',['Arikaim\\Core\\Utils\\Text','render']),
             new TwigFilter('renderArray',['Arikaim\\Core\\Utils\\Text','renderMultiple']),
+            new TwigFilter('renderParams',[$this,'renderParams']),
             new TwigFilter('sliceText',['Arikaim\\Core\\Utils\\Text','sliceText']),
             new TwigFilter('titleCase',['Arikaim\\Core\\Utils\\Text','convertToTitleCase']),
             new TwigFilter('md',[$this,'parseMarkdown']),
@@ -517,6 +519,21 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('baseName',['Arikaim\\Core\\Utils\\File','baseName']),
             new TwigFilter('relativePath',['Arikaim\\Core\\Utils\\Path','getRelativePath'])
         ];
+    }
+
+    /**
+     * Render params array
+     * @param array $data
+     * @param array $params
+     * @return array|object
+     */
+    public function renderParams(array $data, array $params): array
+    {
+        \array_walk_recursive($data,function(&$item) use($params) {
+            $item = Text::render($item,$params);
+        });
+
+        return $data;
     }
 
     /**
