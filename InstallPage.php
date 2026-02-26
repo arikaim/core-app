@@ -23,8 +23,8 @@ class InstallPage extends Controller
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface $response
-     * @param Validator $data
-     * @return Psr\Http\Message\ResponseInterface
+     * @param \Arikaim\Core\Validator\Validator $data
+     * @return mixed
     */
     public function loadInstall($request, $response, $data)
     {              
@@ -34,6 +34,7 @@ class InstallPage extends Controller
         }
 
         // Set contorl panel template as primary
+        $this->get('view')->setTemplateTheme('default');
         $this->get('view')->setPrimaryTemplate('system');
         
         if (Install::isInstalled() == false) {               
