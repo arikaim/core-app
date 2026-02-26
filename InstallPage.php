@@ -33,6 +33,9 @@ class InstallPage extends Controller
             return $this->pageNotFound($response,$data->toArray(),'system'); 
         }
 
+        // Set contorl panel template as primary
+        $this->get('view')->setPrimaryTemplate('system');
+        
         if (Install::isInstalled() == false) {               
             return $this->pageLoad($request,$response,[
                 'page_name' => 'system:install',
