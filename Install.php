@@ -379,7 +379,7 @@ class Install
         // cache
         return $arikaim->get('driver')->install(
             'filesystem',
-            'Doctrine\\Common\\Cache\\FilesystemCache',
+            'Arikaim\\Core\\Cache\\Drivers\\FilesystemCache',
             'cache',
             'Filesystem cache',
             'Filesystem cache driver',
