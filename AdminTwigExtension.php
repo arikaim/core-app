@@ -82,11 +82,8 @@ class AdminTwigExtension extends AbstractExtension implements GlobalsInterface
     public function getSchemaDescriptor(string $schemaClass, ?string $extension = null): array
     {
         $schema = Factory::createSchema($schemaClass,$extension);
-        if ($schema == null) {
-            return null;
-        }
 
-        return $schema->getDescriptor();
+        return ($schema == null) ? [] : $schema->getDescriptor();         
     }
 
     /**

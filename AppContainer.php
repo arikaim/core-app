@@ -85,10 +85,12 @@ class AppContainer
                     Path::TEMPLATES_PATH,
                     Path::COMPONENTS_PATH,
                     [
-                        'cache'      => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
-                        'debug'      => $config['settings']['debug'] ?? false,
-                        'demo_mode'  => $config['settings']['demoMode'] ?? false,
-                        'autoescape' => false
+                        'cache'           => ($cacheStatus == true) ? Path::VIEW_CACHE_PATH : false,
+                        'debug'           => $config['settings']['debug'] ?? false,
+                        'demo_mode'       => $config['settings']['demoMode'] ?? false,
+                        'autoescape'      => false,
+                        'language'        => $config['language'] ?? [],
+                        'defaultLanguage' => $config['settings']['defaultLanguage'] ?? 'en'
                     ],
                     $config['settings']['primaryTemplate'] ?? 'system',
                     $config['settings']['templateTheme'] ?? null
