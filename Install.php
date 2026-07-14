@@ -320,6 +320,8 @@ class Install
         $arikaim->get('event')->registerEvent('core.route.disable','After disable route.');
         $arikaim->get('event')->registerEvent('core.route.enable','After disable route.');
         $arikaim->get('event')->registerEvent('core.page.load','After html page is loaded.');
+        // Jobs
+        $arikaim->get('event')->registerEvent('core.job.execute','After job is executed.');
     } 
 
     /**

@@ -93,7 +93,13 @@ class CronCommand extends ConsoleCommand
 
                 if ($job->hasSuccess() == true) {               
                     $this->writeLn(ConsoleHelper::checkMark() . $name);   
-                    $executed++;                       
+                    $executed++;     
+                    
+                    // dispatch event
+                    $arikaim->get('event')->dispatch('core.job.execute',[
+                        'job' => $job
+                    ]);              
+                        
                 } else {
                     $this->writeLn(ConsoleHelper::errorMark() . 'Job: ' . $name . ' Error: ' . $job->getErrors()[0]);
                     $arikaim->get('logger')->error('Failed to execute cron job,',['errors' => $job->getErrors()]);
